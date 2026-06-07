@@ -57,9 +57,12 @@ function Library:CreateWindow(Properties)
 		BackgroundTransparency = 0.05,
 		BackgroundColor3 = Color3.fromRGB(51, 51, 51),
 		BorderSizePixel = 0,
+		Selectable = true,
+		Draggable = true,
 		Position = UDim2.new(0.292, 0, 0.216, 0),
 		Parent = ScreenGui,
 		Size = UDim2.new(0, 656, 0, 450),
+		Active = true,
 		Name = 'MainFrame',
 	})
 	--
