@@ -2,6 +2,7 @@
 local UserInputService = game:GetService('UserInputService')
 local TweenService = game:GetService('TweenService')
 local Players = game:GetService('Players')
+local CoreGui = game:GetService('CoreGui')
 
 -- // Variables
 local Library = {
@@ -49,7 +50,7 @@ end
 function Library:CreateWindow(Properties)
 	local ScreenGui = CreateInstance('ScreenGui', {
 		ResetOnSpawn = false,
-		Parent = PlayerGui,
+		Parent = CoreGui,
 		Name = 'UIv2',
 	})
 	--
