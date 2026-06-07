@@ -58,12 +58,9 @@ function Library:CreateWindow(Properties)
 		BackgroundTransparency = 0.05,
 		BackgroundColor3 = Color3.fromRGB(51, 51, 51),
 		BorderSizePixel = 0,
-		Selectable = true,
-		Draggable = true,
 		Position = UDim2.new(0.292, 0, 0.216, 0),
 		Parent = Library.Window,
 		Size = UDim2.new(0, 656, 0, 450),
-		Active = true,
 		Name = 'MainFrame',
 	})
 	--
@@ -256,6 +253,39 @@ function Library:CreateWindow(Properties)
 		Size = UDim2.new(1, 0, 0, 42),
 		Text = '',
 	})
+	--
+	local StartPosition = UDim2.new()
+	local DragStart = Vector2.new()
+	--
+	local function UpdatePosition()
+		local MouseLocation = UserInputService:GetMouseLocation()
+		Frame.Position = UDim2.new(StartPosition.X.Scale, StartPosition.X.Offset + (MouseLocation - DragStart).X, StartPosition.Y.Scale, StartPosition.Y.Offset + (MouseLocation - DragStart).Y)
+	end
+	--
+	local Dragging = false
+	--
+	TextButton.InputBegan:Connect(function(Input)
+		if Input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+		--
+		Dragging = true
+		--
+		DragStart = UserInputService:GetMouseLocation()
+		StartPosition = Frame.Position
+		--
+		UpdatePosition()
+	end)
+	--
+	TextButton.InputEnded:Connect(function(Input)
+		if Input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+		--
+		Dragging = false
+	end)
+	--
+	UserInputService.InputChanged:Connect(function(Input)
+		if not Dragging or Input.UserInputType ~= Enum.UserInputType.MouseMovement then return end
+		--
+		UpdatePosition()
+	end)
 	--
 	local Functions; Functions = {
 		CreateSection = function(self, Properties)
