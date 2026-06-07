@@ -1142,7 +1142,7 @@ function Library:CreateWindow(Properties)
 						Library.ElementZone.Sliders[Frame2.Name][Properties.Name] = Current
 						--
 						if Properties.Callback then
-							Properties.Callback(Value)
+							Properties.Callback(tonumber(Value))
 						end
 					end
 					--
@@ -1630,7 +1630,7 @@ function Library:CreateWindow(Properties)
 								Library.ElementZone.Sliders.Minis[Frame2.Name][Properties.Name] = Current
 								--
 								if Properties.Callback then
-									Properties.Callback(Value)
+									Properties.Callback(tonumber(Value))
 								end
 							end
 							--
