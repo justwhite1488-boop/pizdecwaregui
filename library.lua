@@ -11,21 +11,21 @@ local Library = {
 		Dropdowns = {
 			Minis = {},
 		},
-		
+
 		Keybinds = {
 			Minis = {},
 		},
-		
+
 		Textboxes = {},
 		Sliders = {
 			Minis = {},
 		},
-		
+
 		Toggles = {
 			Minis = {},
 		},
 	},
-	
+
 	Window = nil,
 }
 
@@ -48,7 +48,7 @@ function CreateInstance(Class, Properties)
 end
 
 function Library:CreateWindow(Properties)
-	local ScreenGui = CreateInstance('ScreenGui', {
+	Library.Window = CreateInstance('ScreenGui', {
 		ResetOnSpawn = false,
 		Parent = CoreGui,
 		Name = 'UIv2',
@@ -61,7 +61,7 @@ function Library:CreateWindow(Properties)
 		Selectable = true,
 		Draggable = true,
 		Position = UDim2.new(0.292, 0, 0.216, 0),
-		Parent = ScreenGui,
+		Parent = Library.Window,
 		Size = UDim2.new(0, 656, 0, 450),
 		Active = true,
 		Name = 'MainFrame',
@@ -283,7 +283,7 @@ function Library:CreateWindow(Properties)
 			--
 			return Properties
 		end,
-		
+
 		CreateTab = function(self, Properties)
 			if not Tabs.Sections[Properties.Section] then self.CreateSection(self, Properties.Section) end
 			if Tabs.Sections[Properties.Section].Buttons[Properties.Name] then return end
@@ -380,7 +380,7 @@ function Library:CreateWindow(Properties)
 				Tween.Completed:Connect(function() Tween = nil end)
 				Tween:Play()
 			end)
-			
+
 			TextButton2.MouseLeave:Connect(function()
 				if TextLabel3.TextColor3 == Color3.fromRGB(145, 3, 239) then return end
 				if Tween then Tween:Cancel() end
@@ -1664,7 +1664,9 @@ function Library:CreateWindow(Properties)
 		end,
 	}
 	--
-	return ScreenGui and Functions
+	UserInputService.MouseBehavior = Library.Window.Enabled and Enum.MouseBehavior.Default or Enum.MouseBehavior.LockCenter
+	--
+	return Functions
 end
 
 function Library:ApplySettingsTab(Properties)
@@ -1683,7 +1685,7 @@ function Library:ApplySettingsTab(Properties)
 	--
 	Properties:CreateDropdown({
 		Callback = function(Value)
-			
+
 		end,
 		--
 		Options = {'100%', '75%', '50%', '25%'},
@@ -1697,7 +1699,7 @@ function Library:ApplySettingsTab(Properties)
 	--
 	Properties:CreateTextbox({
 		Callback = function(Value)
-			
+
 		end,
 		--
 		PlaceholderText = 'config name',
@@ -1706,6 +1708,16 @@ function Library:ApplySettingsTab(Properties)
 		Name = 'New Name',
 	})
 end
+
+-- // Connections
+UserInputService.InputBegan:Connect(function(Input, Processed)
+	if Processed then return end
+	--
+	if Input.KeyCode == Enum.KeyCode.RightShift then
+		Library.Window.Enabled = not Library.Window.Enabled
+		UserInputService.MouseBehavior = Library.Window.Enabled and Enum.MouseBehavior.Default or Enum.MouseBehavior.LockCenter
+	end
+end)
 
 -- // Return
 return Library
