@@ -1,574 +1,1707 @@
--- // services
-local players = game:GetService('Players')
+-- // Services
+local UserInputService = game:GetService('UserInputService')
+local TweenService = game:GetService('TweenService')
+local Players = game:GetService('Players')
 
--- // variables
-local localplayer = players.LocalPlayer
-local playergui = localplayer.PlayerGui
-
-local module = {
-	elementzone = {
-		tabs = {},
+-- // Variables
+local Library = {
+	ElementZone = {
+		Colorpickers = {},
+		Dropdowns = {
+			Minis = {},
+		},
+		
+		Keybinds = {
+			Minis = {},
+		},
+		
+		Textboxes = {},
+		Sliders = {
+			Minis = {},
+		},
+		
+		Toggles = {
+			Minis = {},
+		},
 	},
 	
-	tabzone = {
-		currentY = 4,
-		
-		sections = {},
-		tabs = {},	
-	},
+	Window = nil,
 }
 
--- // library
-function module.createwindow()
-	local uiv2 = Instance.new('ScreenGui')
-	uiv2.ResetOnSpawn = false
-	uiv2.Parent = playergui
-	uiv2.Name = 'UIv2'
-	--
-	local mainframe = Instance.new('Frame')
-	mainframe.BackgroundTransparency = 0.05
-	mainframe.BackgroundColor3 = Color3.fromRGB(51, 51, 51)
-	mainframe.BorderSizePixel = 0
-	mainframe.BorderColor3 = Color3.fromRGB(27, 42, 53)
-	mainframe.Selectable = true
-	mainframe.Draggable = true
-	mainframe.Position = UDim2.new(0.295, 0, 0.216, 0)
-	mainframe.Parent = uiv2
-	mainframe.Active = true
-	mainframe.Size = UDim2.new(0, 656, 0, 450)
-	mainframe.Name = 'MainFrame'
-	--
-	local mainscale = Instance.new('UIScale')
-	mainscale.Parent = mainframe
-	mainscale.Scale = 1
-	mainscale.Name = 'MainScale'
-	--
-	local uicorner = Instance.new('UICorner')
-	uicorner.CornerRadius = UDim.new(0, 10)
-	uicorner.Parent = mainframe
-	--
-	for index, value in next, {{position = UDim2.new(0, 1, 0.093, 0), size = UDim2.new(0, 655, 0, 1), }, {position = UDim2.new(0.259, 0, 0, 0), size = UDim2.new(0, 1, 0, 450), }, {position = UDim2.new(-0.002, 0, 0.896, 0), size = UDim2.new(0, 170, 0, 1), }} do
-		local line = Instance.new('Frame')
-		line.BackgroundColor3 = Color3.fromRGB(81, 81, 81)
-		line.BorderSizePixel = 0
-		line.BorderColor3 = Color3.fromRGB(27, 24, 53)
-		line.Position = value.position
-		line.Parent = mainframe
-		line.Size = value.size
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer.PlayerGui
+
+local Tabs = {
+	CurrentY = 4,
+	Sections = {},
+}
+
+-- // Functions
+function CreateInstance(Class, Properties)
+	local Object = Instance.new(Class)
+	for Index, Value in next, Properties do
+		Object[Index] = Value
 	end
 	--
-	local frame = Instance.new('Frame')
-	frame.BackgroundTransparency = 1
-	frame.BorderSizePixel = 0
-	frame.Position = UDim2.new(0, 0, 0, 0)
-	frame.Parent = mainframe
-	frame.Size = UDim2.new(0, 170, 0, 42)
+	return Object
+end
+
+function Library:CreateWindow(Properties)
+	local ScreenGui = CreateInstance('ScreenGui', {
+		ResetOnSpawn = false,
+		Parent = PlayerGui,
+		Name = 'UIv2',
+	})
 	--
-	local imagelabel = Instance.new('ImageLabel')
-	imagelabel.BackgroundTransparency = 1
-	imagelabel.BorderSizePixel = 0
-	imagelabel.Position = UDim2.new(0.036, 0, 0.132, 0)
-	imagelabel.Parent = frame
-	imagelabel.Image = 'rbxassetid://116059932418685'
-	imagelabel.Size = UDim2.new(0, 30, 0, 30)
+	local Frame = CreateInstance('Frame', {
+		BackgroundTransparency = 0.05,
+		BackgroundColor3 = Color3.fromRGB(51, 51, 51),
+		BorderSizePixel = 0,
+		Position = UDim2.new(0.292, 0, 0.216, 0),
+		Parent = ScreenGui,
+		Size = UDim2.new(0, 656, 0, 450),
+		Name = 'MainFrame',
+	})
 	--
-	local uicorner = Instance.new('UICorner')
-	uicorner.CornerRadius = UDim.new(0, 5)
-	uicorner.Parent = imagelabel
+	CreateInstance('UIScale', {
+		Parent = Frame,
+		Scale = 1,
+		Name = 'MainScale',
+	})
 	--
-	local textlabel = Instance.new('TextLabel')
-	textlabel.BackgroundTransparency = 1
-	textlabel.BorderSizePixel = 0
-	textlabel.TextXAlignment = Enum.TextXAlignment.Left
-	textlabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	textlabel.TextSize = 17
-	textlabel.Position = UDim2.new(1.333, 0, 0, 0)
-	textlabel.Parent = imagelabel
-	textlabel.Font = Enum.Font.SourceSansBold
-	textlabel.Size = UDim2.new(0, 90, 0, 17)
-	textlabel.Text = 'PizdecWare'
+	CreateInstance('UICorner', {
+		CornerRadius = UDim.new(0, 10),
+		Parent = Frame,
+	})
 	--
-	local textlabel2 = Instance.new('TextLabel')
-	textlabel2.BackgroundTransparency = 1
-	textlabel2.BorderSizePixel = 0
-	textlabel2.TextXAlignment = Enum.TextXAlignment.Left
-	textlabel2.TextColor3 = Color3.fromRGB(133, 133, 133)
-	textlabel2.TextSize = 10
-	textlabel2.Position = UDim2.new(1.333, 0, 0.366, 0)
-	textlabel2.Parent = imagelabel
-	textlabel2.Font = Enum.Font.SourceSansBold
-	textlabel2.Size = UDim2.new(0, 90, 0, 19)
-	textlabel2.Text = 'pizdecware.pw'
+	local ElementZone = CreateInstance('ScrollingFrame', {
+		ScrollBarImageColor3 = Color3.fromRGB(145, 3, 239),
+		AutomaticCanvasSize = Enum.AutomaticSize.Y,
+		BackgroundTransparency = 1,
+		ScrollBarThickness = 0,
+		ScrollingDirection = Enum.ScrollingDirection.Y,
+		BorderSizePixel = 0,
+		CanvasSize = UDim2.new(0, 0, 0, 0),
+		Position = UDim2.new(0.26, 0, 0.096, 0),
+		Parent = Frame,
+		Size = UDim2.new(0, 485, 0, 406),
+		Name = 'ElementZone',
+	})
 	--
-	local frame2 = Instance.new('Frame')
-	frame2.BackgroundTransparency = 1
-	frame2.BorderSizePixel = 0
-	frame2.Position = UDim2.new(0.001, 0, 0.905, 0)
-	frame2.Parent = mainframe
-	frame2.Size = UDim2.new(0, 170, 0, 42)
+	for Index, Value in {{Position = UDim2.new(0, 1, 0.093, 0), Size = UDim2.new(0, 655, 0, 1)}, {Position = UDim2.new(0.259, 0, 0, 0), Size = UDim2.new(0, 1, 0, 450)}, {Position = UDim2.new(-0.002, 0, 0.896, 0), Size = UDim2.new(0, 170, 0, 1)}} do
+		CreateInstance('Frame', {
+			BackgroundColor3 = Color3.fromRGB(81, 81, 81),
+			BorderSizePixel = 0,
+			Position = Value.Position,
+			Parent = Frame,
+			Size = Value.Size,
+		})
+	end
 	--
-	local imagelabel2 = Instance.new('ImageLabel')
-	imagelabel2.BackgroundTransparency = 1
-	imagelabel2.BorderSizePixel = 0
-	imagelabel2.Position = UDim2.new(0.036, 0, 0.132, 0)
-	imagelabel2.Parent = frame2
-	imagelabel2.Image = 'rbxthumb://type=AvatarHeadShot&id=' .. localplayer.UserId .. '&w=180&h=180'
-	imagelabel2.Size = UDim2.new(0, 25, 0, 25)
+	local Top = CreateInstance('Frame', {
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		Parent = Frame,
+		Size = UDim2.new(0, 170, 0, 42),
+	})
 	--
-	local uicorner2 = Instance.new('UICorner')
-	uicorner2.CornerRadius = UDim.new(1, 0)
-	uicorner2.Parent = imagelabel2
+	local ImageLabel = CreateInstance('ImageLabel', {
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		Position = UDim2.new(0.036, 0, 0.132, 0),
+		Parent = Top,
+		Image = Properties.Icon or 'rbxassetid://116059932418685',
+		Size = UDim2.new(0, 30, 0, 30),
+	})
 	--
-	local textlabel3 = Instance.new('TextLabel')
-	textlabel3.BackgroundTransparency = 1
-	textlabel3.BorderSizePixel = 0
-	textlabel3.TextXAlignment = Enum.TextXAlignment.Left
-	textlabel3.TextColor3 = Color3.fromRGB(255, 255, 255)
-	textlabel3.TextSize = 12
-	textlabel3.Position = UDim2.new(1.409, 0, -0.222, 0)
-	textlabel3.Parent = imagelabel2
-	textlabel3.Font = Enum.Font.SourceSansBold
-	textlabel3.Size = UDim2.new(0, 112, 0, 23)
-	textlabel3.Text = localplayer.Name
+	CreateInstance('UICorner', {
+		CornerRadius = UDim.new(0, 5),
+		Parent = ImageLabel,
+	})
 	--
-	local textlabel4 = Instance.new('TextLabel')
-	textlabel4.BackgroundTransparency = 1
-	textlabel4.BorderSizePixel = 0
-	textlabel4.TextXAlignment = Enum.TextXAlignment.Left
-	textlabel4.TextColor3 = Color3.fromRGB(133, 133, 133)
-	textlabel4.TextSize = 10
-	textlabel4.Position = UDim2.new(1.409, 0, 0.364, 0)
-	textlabel4.Parent = imagelabel2
-	textlabel4.Font = Enum.Font.SourceSansBold
-	textlabel4.Size = UDim2.new(0, 63, 0, 18)
-	textlabel4.Text = 'Permanent'
+	CreateInstance('TextLabel', {
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextColor3 = Color3.fromRGB(255, 255, 255),
+		TextSize = 17,
+		Position = UDim2.new(1.333, 0, 0, 0),
+		Parent = ImageLabel,
+		Font = Enum.Font.SourceSansBold,
+		Size = UDim2.new(0, 90, 0, 17),
+		Text = Properties.Title or 'PizdecWare',
+	})
 	--
-	local frame3 = Instance.new('Frame')
-	frame3.BackgroundTransparency = 1
-	frame3.BorderSizePixel = 0
-	frame3.Position = UDim2.new(0.26, 0, 0, 0)
-	frame3.Parent = mainframe
-	frame3.Size = UDim2.new(0, 486, 0, 42)
+	CreateInstance('TextLabel', {
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextColor3 = Color3.fromRGB(133, 133, 133),
+		TextSize = 10,
+		Position = UDim2.new(1.333, 0, 0.366, 0),
+		Parent = ImageLabel,
+		Font = Enum.Font.SourceSansBold,
+		Size = UDim2.new(0, 90, 0, 19),
+		Text = Properties.Subtitle or 'pizdecware.pw',
+	})
 	--
-	local imagelabel3 = Instance.new('ImageLabel')
-	imagelabel3.BackgroundTransparency = 1
-	imagelabel3.BorderSizePixel = 0
-	imagelabel3.Position = UDim2.new(0.023, 0, 0.31, 0)
-	imagelabel3.Parent = frame3
-	imagelabel3.Image = 'rbxassetid://15016878198'
-	imagelabel3.Size = UDim2.new(0, 17, 0, 17)
+	local Bottom = CreateInstance('Frame', {
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		Position = UDim2.new(0.001, 0, 0.905, 0),
+		Parent = Frame,
+		Size = UDim2.new(0, 170, 0, 42),
+	})
 	--
-	local textlabel5 = Instance.new('TextLabel')
-	textlabel5.BackgroundTransparency = 1
-	textlabel5.BorderSizePixel = 0
-	textlabel5.TextXAlignment = Enum.TextXAlignment.Left
-	textlabel5.TextColor3 = Color3.fromRGB(255, 255, 255)
-	textlabel5.TextSize = 14
-	textlabel5.RichText = true
-	textlabel5.Position = UDim2.new(0.072, 0, 0.31, 0)
-	textlabel5.Parent = frame3
-	textlabel5.Font = Enum.Font.SourceSansBold
-	textlabel5.Size = UDim2.new(0, 300, 0, 15)
-	textlabel5.Text = '<font color="rgb(133,133,133)">Settings    /    </font><font color="rgb(255,255,255)">Settings</font>'
+	local ImageLabel2 = CreateInstance('ImageLabel', {
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		Position = UDim2.new(0.059, 0, 0.168, 0),
+		Parent = Bottom,
+		Image = 'rbxassetid://0',
+		Size = UDim2.new(0, 25, 0, 25),
+	})
 	--
-	local uipadding = Instance.new('UIPadding')
-	uipadding.PaddingBottom = UDim.new(0, 0)
-	uipadding.PaddingRight = UDim.new(0, 2)
-	uipadding.PaddingLeft = UDim.new(0, 2)
-	uipadding.PaddingTop = UDim.new(0, 0)
-	uipadding.Parent = textlabel5
+	CreateInstance('UICorner', {
+		CornerRadius = UDim.new(1, 0),
+		Parent = ImageLabel2,
+	})
 	--
-	local tabzone = Instance.new('Frame')
-	tabzone.BackgroundTransparency = 1
-	tabzone.BorderSizePixel = 0
-	tabzone.Position = UDim2.new(0, 0, 0.096, 0)
-	tabzone.Parent = mainframe
-	tabzone.Size = UDim2.new(0, 170, 0, 364)
-	tabzone.Name = 'TabZone'
+	local TextLabel = CreateInstance('TextLabel', {
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextColor3 = Color3.fromRGB(255, 255, 255),
+		TextSize = 12,
+		Position = UDim2.new(1.409, 0, -0.222, 0),
+		Parent = ImageLabel2,
+		Font = Enum.Font.SourceSansBold,
+		Size = UDim2.new(0, 112, 0, 23),
+		Text = 'Art3sO',
+	})
 	--
-	local elementzone = Instance.new('ScrollingFrame')
-	elementzone.BackgroundTransparency = 1
-	elementzone.ScrollBarImageColor3 = Color3.fromRGB(145, 3, 239)
-	elementzone.ScrollBarThickness = 0
-	elementzone.ScrollingDirection = Enum.ScrollingDirection.Y
-	elementzone.BorderSizePixel = 0
-	elementzone.CanvasSize = UDim2.new(0, 0, 0, 0)
-	elementzone.Position = UDim2.new(0.26, 0, 0.096, 0)
-	elementzone.Parent = mainframe
-	elementzone.Size = UDim2.new(0, 485, 0, 406)
-	elementzone.Name = 'ElementZone'
+	CreateInstance('UIGradient', {
+		Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.79, 0.81), NumberSequenceKeypoint.new(1, 1)}),
+		Parent = TextLabel,
+	})
 	--
-	local functions; functions = {
-		createsection = function(...)
-			local args = ...
-			if not args then return end
+	CreateInstance('TextLabel', {
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextColor3 = Color3.fromRGB(133, 133, 133),
+		TextSize = 10,
+		Position = UDim2.new(1.409, 0, 0.364, 0),
+		Parent = ImageLabel2,
+		Font = Enum.Font.SourceSansBold,
+		Size = UDim2.new(0, 63, 0, 18),
+		Text = 'Permanent',
+	})
+	--
+	local Bar = CreateInstance('Frame', {
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		Position = UDim2.new(0.26, 0, 0, 0),
+		Parent = Frame,
+		Size = UDim2.new(0, 486, 0, 42),
+	})
+	--
+	CreateInstance('ImageLabel', {
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		Position = UDim2.new(0.023, 0, 0.31, 0),
+		Parent = Bar,
+		Image = 'rbxassetid://15016878198',
+		Size = UDim2.new(0, 17, 0, 17),
+	})
+	--
+	local TextLabel2 = CreateInstance('TextLabel', {
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextColor3 = Color3.fromRGB(255, 255, 255),
+		TextSize = 14,
+		Position = UDim2.new(0.072, 0, 0.31, 0),
+		RichText = true,
+		Parent = Bar,
+		Font = Enum.Font.SourceSansBold,
+		Size = UDim2.new(0, 300, 0, 15),
+		Text = '<font color="rgb(133,133,133)">Settings    /    </font><font color="rgb(255,255,255)">Settings</font>',
+	})
+	--
+	CreateInstance('UIPadding', {
+		PaddingRight = UDim.new(0, 2),
+		PaddingLeft = UDim.new(0, 2),
+		Parent = TextLabel2,
+	})
+	--
+	local TabZone = CreateInstance('Frame', {
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		Position = UDim2.new(0, 0, 0.096, 0),
+		Parent = Frame,
+		Size = UDim2.new(0, 170, 0, 364),
+		Name = 'TabZone',
+	})
+	--
+	local TextButton = CreateInstance('TextButton', {
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		ZIndex = 5,
+		Parent = Frame,
+		Size = UDim2.new(1, 0, 0, 42),
+		Text = '',
+	})
+	--
+	local Functions; Functions = {
+		CreateSection = function(self, Properties)
+			if Tabs.Sections[Properties] then return Properties end
 			--
-			module.tabzone.sections[args.name] = {
-				yPosition = module.tabzone.currentY,
-				buttons = {},
+			Tabs.Sections[Properties] = {
+				Position = Tabs.CurrentY,
+				Buttons = {},
 			}
 			--
-			local textlabel6 = Instance.new('TextLabel')
-			textlabel6.BackgroundTransparency = 1
-			textlabel6.BorderSizePixel = 0
-			textlabel6.TextXAlignment = Enum.TextXAlignment.Left
-			textlabel6.TextColor3 = Color3.fromRGB(133, 133, 133)
-			textlabel6.TextSize = 13
-			textlabel6.Position = UDim2.new(0, 14, 0, module.tabzone.currentY)
-			textlabel6.Parent = tabzone
-			textlabel6.Font = Enum.Font.SourceSansBold
-			textlabel6.Size = UDim2.new(0, 140, 0, 16)
-			textlabel6.Text = args.name
+			CreateInstance('TextLabel', {
+				BackgroundTransparency = 1,
+				BorderSizePixel = 0,
+				TextXAlignment = Enum.TextXAlignment.Left,
+				TextColor3 = Color3.fromRGB(133, 133, 133),
+				TextSize = 13,
+				Position = UDim2.new(0, 14, 0, Tabs.CurrentY),
+				Parent = TabZone,
+				Font = Enum.Font.SourceSansBold,
+				Size = UDim2.new(0, 140, 0, 16),
+				Text = Properties,
+			})
 			--
-			return args.name
+			Tabs.CurrentY = Tabs.CurrentY + 37
+			--
+			return Properties
 		end,
-		--
-		createtab = function(...)
-			local args = ...
-			if not args then return end
+		
+		CreateTab = function(self, Properties)
+			if not Tabs.Sections[Properties.Section] then self.CreateSection(self, Properties.Section) end
+			if Tabs.Sections[Properties.Section].Buttons[Properties.Name] then return end
 			--
-			if not module.tabzone.sections[args.section] then functions.createsection({name = args.section}) end
-			--
-			local buttonY = nil
-			if #module.tabzone.sections[args.section].buttons == 0 then
-				buttonY = module.tabzone.currentY + 20
+			local Position = nil
+			if #Tabs.Sections[Properties.Section].Buttons == 0 then
+				Position = Tabs.Sections[Properties.Section].Position + 20
 			else
-				local lastbutton = module.tabzone.tabs[module.tabzone.sections[args.section].buttons[#module.tabzone.sections[args.section].buttons]]
-				buttonY = lastbutton.yPosition + 29
+				local LastButton = Tabs.Sections[Properties.Section].Buttons[#Tabs.Sections[Properties.Section].Buttons]
+				Position = LastButton.Position + 29
 			end
 			--
-			table.insert(module.tabzone.sections[args.section].buttons, args.name)
+			local TextButton2 = CreateInstance('TextButton', {
+				BackgroundTransparency = 1,
+				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+				AutoButtonColor = false,
+				BorderSizePixel = 0,
+				Position = UDim2.new(0, 8, 0, Position),
+				Parent = TabZone,
+				Size = UDim2.new(0, 146, 0, 25),
+				Text = '',
+			})
 			--
-			module.tabzone.tabs[args.name] = {
-				section = args.section,
-				yPosition = buttonY,
-			}
+			CreateInstance('UICorner', {
+				CornerRadius = UDim.new(0, 7),
+				Parent = TextButton2,
+			})
 			--
-			local textbutton = Instance.new('TextButton')
-			textbutton.BackgroundTransparency = 1
-			textbutton.BorderSizePixel = 0
-			textbutton.Position = UDim2.new(0, 8, 0, buttonY)
-			textbutton.Parent = tabzone
-			textbutton.Font = Enum.Font.SourceSans
-			textbutton.Size = UDim2.new(0, 146, 0, 25)
-			textbutton.Text = ''
+			local ImageLabel3 = CreateInstance('ImageLabel', {
+				BackgroundTransparency = 1,
+				BorderSizePixel = 0,
+				Position = UDim2.new(0, 14, 0.5, -8),
+				Parent = TextButton2,
+				Image = Properties.Icon or 'rbxassetid://0',
+				Size = UDim2.new(0, 16, 0, 16),
+			})
 			--
-			local uicorner3 = Instance.new('UICorner')
-			uicorner3.CornerRadius = UDim.new(0, 7)
-			uicorner3.Parent = textbutton
+			local TextLabel3 = CreateInstance('TextLabel', {
+				BackgroundTransparency = 1,
+				BorderSizePixel = 0,
+				TextXAlignment = Enum.TextXAlignment.Left,
+				TextColor3 = Color3.fromRGB(255, 255, 255),
+				TextSize = 14,
+				Position = UDim2.new(0, 36, 0, 0),
+				Parent = TextButton2,
+				Font = Enum.Font.SourceSansBold,
+				Size = UDim2.new(1, -40, 1, 0),
+				Text = Properties.Name,
+			})
 			--
-			local textlabel7 = Instance.new('TextLabel')
-			textlabel7.BackgroundTransparency = 1
-			textlabel7.BorderSizePixel = 0
-			textlabel7.TextXAlignment = Enum.TextXAlignment.Left
-			textlabel7.TextColor3 = Color3.fromRGB(255, 255, 255)
-			textlabel7.TextSize = 14
-			textlabel7.Position = UDim2.new(0, 36, 0, 0)
-			textlabel7.Parent = textbutton
-			textlabel7.Font = Enum.Font.SourceSansBold
-			textlabel7.Size = UDim2.new(1, -40, 1, 0)
-			textlabel7.Text = args.name
-			--
-			local imagelabel4 = Instance.new('ImageLabel')
-			imagelabel4.BackgroundTransparency = 1
-			imagelabel4.BorderSizePixel = 0
-			imagelabel4.Position = UDim2.new(0, 14, 0.5, -8)
-			imagelabel4.Parent = textbutton
-			imagelabel4.Image = args.icon
-			imagelabel4.Size = UDim2.new(0, 16, 0, 16)
-			--
-			local frame4 = Instance.new('Frame')
-			frame4.BackgroundTransparency = 1
-			frame4.BorderSizePixel = 0
-			frame4.AutomaticSize = Enum.AutomaticSize.Y
-			frame4.Position = UDim2.new(0, 0, 0, 0)
-			frame4.Visible = false
-			frame4.Parent = elementzone
-			frame4.Size = UDim2.new(1, 0, 0, 0)
-			frame4.Name = args.name
-			--
-			local uilistlayout = Instance.new('UIListLayout')
-			uilistlayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-			uilistlayout.SortOrder = Enum.SortOrder.LayoutOrder
-			uilistlayout.Padding = UDim.new(0, 8)
-			uilistlayout.Parent = frame4
-			--
-			local uipadding2 = Instance.new('UIPadding')
-			uipadding2.PaddingBottom = UDim.new(0, 7)
-			uipadding2.PaddingRight = UDim.new(0, 13)
-			uipadding2.PaddingLeft = UDim.new(0, 13)
-			uipadding2.PaddingTop = UDim.new(0, 7)
-			uipadding2.Parent = frame4
-			--
-			if #tabzone:GetChildren() == 2 then
-				frame4.Visible = true
-				textbutton.Transparency = 0.9
+			if #ElementZone:GetChildren() == 0 then
+				TextButton2.Transparency = 0.9
 				--
-				textlabel7.TextColor3 = Color3.fromRGB(145, 3, 239)
-				imagelabel4.ImageColor3 = Color3.fromRGB(145, 3, 239)
+				TextLabel2.Text = '<font color="rgb(133,133,133)">' .. Properties.Section  .. '    /    ' ..  '</font><font color="rgb(255,255,255)">' .. Properties.Name .. '</font>'
+				TextLabel3.TextColor3 = Color3.fromRGB(145, 3, 239)
 				--
-				textlabel5.Text = '<font color="rgb(133,133,133)">' .. args.section  .. '    /    ' ..  '</font><font color="rgb(255,255,255)">' .. args.name .. '</font>'
+				ImageLabel3.ImageColor3 = Color3.fromRGB(145, 3, 239)
 			end
 			--
-			textbutton.MouseButton1Click:Connect(function()
-				if textbutton.Transparency > 0.9 then
-					frame4.Visible = true
-					textbutton.Transparency = 0.9
-					--
-					textlabel7.TextColor3 = Color3.fromRGB(145, 3, 239)
-					imagelabel4.ImageColor3 = Color3.fromRGB(145, 3, 239)
-				end
+			local Frame2 = CreateInstance('Frame', {
+				BackgroundTransparency = 1,
+				BorderSizePixel = 0,
+				AutomaticSize = Enum.AutomaticSize.Y,
+				Visible = #ElementZone:GetChildren() == 0 and true or false,
+				Parent = ElementZone,
+				Size = UDim2.new(1, 0, 0, 0),
+				Name = Properties.Name,
+			})
+			--
+			CreateInstance('UIListLayout', {
+				HorizontalAlignment = Enum.HorizontalAlignment.Center,
+				SortOrder = Enum.SortOrder.LayoutOrder,
+				Padding = UDim.new(0, 8),
+				Parent = Frame2,
+			})
+			--
+			CreateInstance('UIPadding', {
+				PaddingBottom = UDim.new(0, 7),
+				PaddingRight = UDim.new(0, 13),
+				PaddingLeft = UDim.new(0, 13),
+				PaddingTop = UDim.new(0, 7),
+				Parent = Frame2,
+			})
+			--
+			local Tween = nil
+			TextButton2.MouseEnter:Connect(function()
+				if TextLabel3.TextColor3 == Color3.fromRGB(145, 3, 239) then return end
+				if Tween then Tween:Cancel() end
 				--
-				for index, value in next, tabzone:GetChildren() do
-					if not value:IsA('TextButton') or value == textbutton then continue end
-					value.Transparency = 1
-					--
-					value:FindFirstChild('TextLabel').TextColor3 = Color3.fromRGB(255, 255, 255)
-					value:FindFirstChild('ImageLabel').ImageColor3 = Color3.fromRGB(255, 255, 255)
-				end
+				Tween = TweenService:Create(TextButton2, TweenInfo.new(0.15, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {
+					Transparency = 0.85
+				})
 				--
-				for index, value in next, elementzone:GetChildren() do
-					if not value:IsA('Frame') or value == frame4 then continue end
-					--
-					value.Visible = false
-				end
+				Tween.Completed:Connect(function() Tween = nil end)
+				Tween:Play()
+			end)
+			
+			TextButton2.MouseLeave:Connect(function()
+				if TextLabel3.TextColor3 == Color3.fromRGB(145, 3, 239) then return end
+				if Tween then Tween:Cancel() end
 				--
-				textlabel5.Text = '<font color="rgb(133,133,133)">' .. args.section  .. '    /    ' ..  '</font><font color="rgb(255,255,255)">' .. args.name .. '</font>'
+				Tween = TweenService:Create(TextButton2, TweenInfo.new(0.15, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {
+					Transparency = 1
+				})
+				--
+				Tween.Completed:Connect(function() Tween = nil end)
+				Tween:Play()
 			end)
 			--
-			if not module.elementzone.tabs[args.name] then
-				module.elementzone.tabs[args.name] = {
-					sections = {},
-					order = 0,
-				}
-			end
-			--
-			module.tabzone.currentY = buttonY + 37
-			--
-			local functions2; functions2 = {
-				createsection = function(...)
-					local args2 = ...
-					if not args2 or module.elementzone.tabs[args.name].sections[args2.name] then return end
+			TextButton2.MouseButton1Click:Connect(function()
+				if TextLabel3.TextColor3 == Color3.fromRGB(145, 3, 239) then return end
+				if Tween then Tween:Cancel() end
+				--
+				Frame2.Visible = true
+				--
+				TextButton2.Transparency = 0.9
+				TextLabel2.Text = '<font color="rgb(133,133,133)">' .. Properties.Section  .. '    /    ' ..  '</font><font color="rgb(255,255,255)">' .. Properties.Name .. '</font>'
+				--
+				TextLabel3.TextColor3 = Color3.fromRGB(145, 3, 239)
+				ImageLabel3.ImageColor3 = Color3.fromRGB(145, 3, 239)
+				--
+				for Index, Value in next, TabZone:GetChildren() do
+					if not Value:IsA('TextButton') or Value == TextButton2 then continue end
 					--
-					module.elementzone.tabs[args.name].order += 99
+					Value.Transparency = 1
+					Value:FindFirstChild('TextLabel').TextColor3 = Color3.fromRGB(255, 255, 255)
+					Value:FindFirstChild('ImageLabel').ImageColor3 = Color3.fromRGB(255, 255, 255)
+				end
+				--
+				for Index, Value in next, ElementZone:GetChildren() do
+					if not Value:IsA('Frame') or Value == Frame2 then continue end
 					--
-					if #module.elementzone.tabs[args.name].sections > 0 then
-						local frame5 = Instance.new('Frame')
-						frame5.BackgroundTransparency = 1
-						frame5.BorderSizePixel = 0
-						frame5.LayoutOrder = module.elementzone.tabs[args.name].order
-						frame5.Parent = frame4
-						frame5.Size = UDim2.new(1, 0, 0, 2)
-						--
-						module.elementzone.tabs[args.name].order += 1
+					Value.Visible = false
+				end
+			end)
+			--
+			local Functions; Functions = {
+				CreateColorpicker = function(self, Properties)
+					if typeof(Properties.Default) ~= 'Color3' then return end
+					--
+					local Frame3 = CreateInstance('Frame', {
+						BackgroundColor3 = Color3.fromRGB(59, 59, 59),
+						BorderSizePixel = 0,
+						Parent = Frame2,
+						Size = UDim2.new(1, 0, 0, 45),
+						Name = Properties.Name,
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 8),
+						Parent = Frame3,
+					})
+					--
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = Frame3,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
+					--
+					local TextButton3 = CreateInstance('TextButton', {
+						BackgroundColor3 = Properties.Default,
+						BorderSizePixel = 0,
+						Position = UDim2.new(0.901, 0, 0.289, 0),
+						Parent = Frame3,
+						Size = UDim2.new(0, 36, 0, 20),
+						Text = '',
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 6),
+						Parent = TextButton3,
+					})
+					--
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = TextButton3,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
+					--
+					CreateInstance('TextLabel', {
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						TextColor3 = Color3.fromRGB(255, 255, 255),
+						TextSize = 16,
+						Position = UDim2.new(0.027, 0, Properties.Notice ~= nil and 0 or 0.5, Properties.Notice ~= nil and 0 or -8),
+						Parent = Frame3,
+						Font = Enum.Font.SourceSansBold,
+						Size = UDim2.new(0, 200, 0, Properties.Notice ~= nil and 28 or 16),
+						Text = Properties.Name,
+						Name = 'Name',
+					})
+					--
+					if Properties.Notice then
+						CreateInstance('TextLabel', {
+							BackgroundTransparency = 1,
+							BorderSizePixel = 0,
+							TextXAlignment = Enum.TextXAlignment.Left,
+							TextColor3 = Color3.fromRGB(133, 133, 133),
+							TextSize = 12,
+							Position = UDim2.new(0.027, 0, 0, 26),
+							Parent = Frame3,
+							Font = Enum.Font.SourceSansBold,
+							Size = UDim2.new(0, 200, 0, 18),
+							Text = Properties.Notice,
+							Name = 'Note',
+						})
 					end
 					--
-					local textlabel8 = Instance.new('TextLabel')
-					textlabel8.BackgroundTransparency = 1
-					textlabel8.BorderSizePixel = 0
-					textlabel8.TextXAlignment = Enum.TextXAlignment.Left
-					textlabel8.LayoutOrder = module.elementzone.tabs[args.name].order
-					textlabel8.TextColor3 = Color3.fromRGB(133, 133, 133)
-					textlabel8.TextSize = 13
-					textlabel8.Parent = frame4
-					textlabel8.Font = Enum.Font.SourceSansBold
-					textlabel8.Size = UDim2.new(1, 0, 0, 14)
-					textlabel8.Text = args2.name
-					--
-					local uipadding3 = Instance.new('UIPadding')
-					uipadding3.PaddingBottom = UDim.new(0, 0)
-					uipadding3.PaddingRight = UDim.new(0, 0)
-					uipadding3.PaddingLeft = UDim.new(0, 10)
-					uipadding3.PaddingTop = UDim.new(0, 0)
-					uipadding3.Parent = textlabel8
-					--
-					module.elementzone.tabs[args.name].sections[args2.name] = {
-						order = module.elementzone.tabs[args.name].order,
-						items = {},
-					}
-					--
-					table.insert(module.elementzone.tabs[args.name].sections, args2.name)
-					--
-					return args2.name
+					if not Library.ElementZone.Colorpickers[Frame2.Name] then Library.ElementZone.Colorpickers[Frame2.Name] = {} end
+					Library.ElementZone.Colorpickers[Frame2.Name][Properties.Name] = Properties.Default
 				end,
 				--
-				createbutton = function(...)
-					local args2 = ...
-					if not args2 then return end
+				CreateDropdown = function(self, Properties)
+					local Frame3 = CreateInstance('Frame', {
+						BackgroundColor3 = Color3.fromRGB(59, 59, 59),
+						BorderSizePixel = 0,
+						Parent = Frame2,
+						Size = UDim2.new(1, 0, 0, 45),
+						Name = Properties.Name,
+					})
 					--
-					if not module.elementzone.tabs[args.name].sections[args2.section] then functions2.createsection({name = args2.section}) end
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 8),
+						Parent = Frame3,
+					})
 					--
-					local layoutorder = module.elementzone.tabs[args.name].sections[args2.section].order + #module.elementzone.tabs[args.name].sections[args2.section].items + 2
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = Frame3,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
 					--
-					local frame6 = Instance.new('Frame')
-					frame6.BackgroundColor3 = Color3.fromRGB(59, 59, 59)
-					frame6.BorderSizePixel = 0
-					frame6.LayoutOrder = layoutorder
-					frame6.Size = UDim2.new(1, 0, 0, 45)
-					frame6.Parent = frame4
-					frame6.Name = args2.name
+					local TextButton3 = CreateInstance('TextButton', {
+						BackgroundColor3 = Color3.fromRGB(29, 29, 29),
+						AutoButtonColor = false,
+						BorderSizePixel = 0,
+						Position = UDim2.new(0.673, 0, 0.223, 0),
+						Parent = Frame3,
+						Size = UDim2.new(0, 140, 0, 24),
+						Text = '',
+					})
 					--
-					local uicorner4 = Instance.new('UICorner')
-					uicorner4.CornerRadius = UDim.new(0, 8)
-					uicorner4.Parent = frame6
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 4),
+						Parent = TextButton3,
+					})
 					--
-					local uistroke = Instance.new('UIStroke')
-					uistroke.Transparency = 0.9
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = TextButton3,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
 					--
-					local textlabel9 = Instance.new('TextLabel')
-					textlabel9.BackgroundTransparency = 1
-					textlabel9.BorderSizePixel = 0
-					textlabel9.TextXAlignment = Enum.TextXAlignment.Left
-					textlabel9.TextColor3 = Color3.fromRGB(255, 255, 255)
-					textlabel9.TextSize = 16
-					textlabel9.Position = UDim2.new(0.027, 0, 0.5, -8)
-					textlabel9.Parent = frame6
-					textlabel9.Font = Enum.Font.SourceSansBold
-					textlabel9.Size = UDim2.new(0, 200, 0, 16)
-					textlabel9.Text = args2.name
-					textlabel9.Name = 'Name'
+					CreateInstance('ImageLabel', {
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						Position = UDim2.new(0.867, 0, 0.265, 0),
+						Parent = TextButton3,
+						Image = 'rbxassetid://13116390649',
+						Size = UDim2.new(0, 10, 0, 10),
+					})
 					--
-					local textbutton2 = Instance.new('TextButton')
-					textbutton2.BackgroundColor3 = Color3.fromRGB(145, 3, 239)
-					textbutton2.BorderSizePixel = 0
-					textbutton2.TextColor3 = Color3.fromRGB(255, 255, 255)
-					textbutton2.Position = UDim2.new(0.781, 0, 0.205, 0)
-					textbutton2.TextSize = 13
-					textbutton2.Parent = frame6
-					textbutton2.Font = Enum.Font.SourceSansBold
-					textbutton2.Size = UDim2.new(0, 90, 0, 25)
-					textbutton2.Text = args2.text
+					CreateInstance('TextLabel', {
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						TextColor3 = Color3.fromRGB(255, 255, 255),
+						TextSize = 12,
+						Position = UDim2.new(0.056, 0, 0.208, 0),
+						Parent = TextButton3,
+						Font = Enum.Font.SourceSansBold,
+						Size = UDim2.new(0, 104, 0, 13),
+						Text = Properties.Default,
+					})
 					--
-					local uicorner5 = Instance.new('UICorner')
-					uicorner5.CornerRadius = UDim.new(0, 5)
-					uicorner5.Parent = textbutton2
+					CreateInstance('TextLabel', {
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						TextColor3 = Color3.fromRGB(255, 255, 255),
+						TextSize = 16,
+						Position = UDim2.new(0.027, 0, Properties.Notice ~= nil and 0 or 0.5, Properties.Notice ~= nil and 0 or -8),
+						Parent = Frame3,
+						Font = Enum.Font.SourceSansBold,
+						Size = UDim2.new(0, 200, 0, Properties.Notice ~= nil and 28 or 16),
+						Text = Properties.Name,
+						Name = 'Name',
+					})
 					--
-					textbutton2.MouseButton1Click:Connect(function()
-						args2.callback()
+					if Properties.Notice then
+						CreateInstance('TextLabel', {
+							BackgroundTransparency = 1,
+							BorderSizePixel = 0,
+							TextXAlignment = Enum.TextXAlignment.Left,
+							TextColor3 = Color3.fromRGB(133, 133, 133),
+							TextSize = 12,
+							Position = UDim2.new(0.027, 0, 0, 26),
+							Parent = Frame3,
+							Font = Enum.Font.SourceSansBold,
+							Size = UDim2.new(0, 200, 0, 18),
+							Text = Properties.Notice,
+							Name = 'Note',
+						})
+					end
+					--
+					if not Library.ElementZone.Dropdowns[Frame2.Name] then Library.ElementZone.Dropdowns[Frame2.Name] = {} end
+					Library.ElementZone.Dropdowns[Frame2.Name][Properties.Name] = Properties.Default
+				end,
+				--
+				CreateKeybind = function(self, Properties)
+					local Frame3 = CreateInstance('Frame', {
+						BackgroundColor3 = Color3.fromRGB(59, 59, 59),
+						BorderSizePixel = 0,
+						Parent = Frame2,
+						Size = UDim2.new(1, 0, 0, 45),
+						Name = Properties.Name,
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 8),
+						Parent = Frame3,
+					})
+					--
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = Frame3,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
+					--
+					local TextButton3 = CreateInstance('TextButton', {
+						BackgroundColor3 = Color3.fromRGB(29, 29, 29),
+						BorderSizePixel = 0,
+						TextColor3 = Color3.fromRGB(255, 255, 255),
+						TextSize = 11,
+						Position = UDim2.new(1, -70, 0.5, -9),
+						Parent = Frame3,
+						Font = Enum.Font.SourceSansBold,
+						Size = UDim2.new(0, 63, 0, 18),
+						Text = Properties.Default,
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 4),
+						Parent = TextButton3,
+					})
+					--
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = TextButton3,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
+					--
+					CreateInstance('TextLabel', {
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						TextColor3 = Color3.fromRGB(255, 255, 255),
+						TextSize = 16,
+						Position = UDim2.new(0.027, 0, Properties.Notice ~= nil and 0 or 0.5, Properties.Notice ~= nil and 0 or -8),
+						Parent = Frame3,
+						Font = Enum.Font.SourceSansBold,
+						Size = UDim2.new(0, 200, 0, Properties.Notice ~= nil and 28 or 16),
+						Text = Properties.Name,
+						Name = 'Name',
+					})
+					--
+					if Properties.Notice then
+						CreateInstance('TextLabel', {
+							BackgroundTransparency = 1,
+							BorderSizePixel = 0,
+							TextXAlignment = Enum.TextXAlignment.Left,
+							TextColor3 = Color3.fromRGB(133, 133, 133),
+							TextSize = 12,
+							Position = UDim2.new(0.027, 0, 0, 26),
+							Parent = Frame3,
+							Font = Enum.Font.SourceSansBold,
+							Size = UDim2.new(0, 200, 0, 18),
+							Text = Properties.Notice,
+							Name = 'Note',
+						})
+					end
+					--
+					if not Library.ElementZone.Keybinds[Frame2.Name] then Library.ElementZone.Keybinds[Frame2.Name] = {} end
+					Library.ElementZone.Keybinds[Frame2.Name][Properties.Name] = Properties.Default
+				end,
+				--
+				CreateSection = function(self, Properties)
+					local TextLabel4 = CreateInstance('TextLabel', {
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						TextColor3 = Color3.fromRGB(133, 133, 133),
+						TextSize = 13,
+						Parent = Frame2,
+						Font = Enum.Font.SourceSansBold,
+						Size = UDim2.new(1, 0, 0, 14),
+						Text = Properties,
+					})
+					--
+					CreateInstance('UIPadding', {
+						PaddingLeft = UDim.new(0, 10), 
+						Parent = TextLabel4,
+					})
+				end,
+				--
+				CreateTextbox = function(self, Properties)
+					local Frame3 = CreateInstance('Frame', {
+						BackgroundColor3 = Color3.fromRGB(59, 59, 59),
+						BorderSizePixel = 0,
+						Parent = Frame2,
+						Size = UDim2.new(1, 0, 0, 45),
+						Name = Properties.Name,
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 8),
+						Parent = Frame3,
+					})
+					--
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = Frame3,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
+					--
+					local TextBox = CreateInstance('TextBox', {
+						PlaceholderColor3 = Color3.fromRGB(133, 133, 133),
+						BackgroundColor3 = Color3.fromRGB(29, 29, 29),
+						ClearTextOnFocus = false,
+						PlaceholderText = Properties.PlaceholderText,
+						BorderSizePixel = 0,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						TextColor3 = Color3.fromRGB(255, 255, 255),
+						TextSize = 12,
+						Position = UDim2.new(0.5, 0, 0.5, -10),
+						Parent = Frame3,
+						Font = Enum.Font.SourceSansBold,
+						Text = '',
+						Size = UDim2.new(0.5, -7, 0, 20),
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 4),
+						Parent = TextBox,
+					})
+					--
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = TextBox,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
+					--
+					CreateInstance('UIPadding', {
+						PaddingLeft = UDim.new(0, 6),
+						Parent = TextBox,
+					})
+					--
+					CreateInstance('TextLabel', {
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						TextColor3 = Color3.fromRGB(255, 255, 255),
+						TextSize = 16,
+						Position = UDim2.new(0.027, 0, Properties.Notice ~= nil and 0 or 0.5, Properties.Notice ~= nil and 0 or -8),
+						Parent = Frame3,
+						Font = Enum.Font.SourceSansBold,
+						Size = UDim2.new(0, 200, 0, Properties.Notice ~= nil and 28 or 16),
+						Text = Properties.Name,
+						Name = 'Name',
+					})
+					--
+					if Properties.Notice then
+						CreateInstance('TextLabel', {
+							BackgroundTransparency = 1,
+							BorderSizePixel = 0,
+							TextXAlignment = Enum.TextXAlignment.Left,
+							TextColor3 = Color3.fromRGB(133, 133, 133),
+							TextSize = 12,
+							Position = UDim2.new(0.027, 0, 0, 26),
+							Parent = Frame3,
+							Font = Enum.Font.SourceSansBold,
+							Size = UDim2.new(0, 200, 0, 18),
+							Text = Properties.Notice,
+							Name = 'Note',
+						})
+					end
+					--
+					TextBox:GetPropertyChangedSignal('Text'):Connect(function()
+						Library.ElementZone.Textboxes[Frame2.Name][Properties.Name] = TextBox.Text
+						--
+						if Properties.Callback then
+							Properties.Callback(TextBox.Text)
+						end
 					end)
 					--
-					table.insert(module.elementzone.tabs[args.name].sections[args2.section].items, args2.name)
-					--
-					return {}
+					if not Library.ElementZone.Textboxes[Frame2.Name] then Library.ElementZone.Textboxes[Frame2.Name] = {} end
+					Library.ElementZone.Textboxes[Frame2.Name][Properties.Name] = TextBox.Text
 				end,
 				--
-				createtoggle = function(...)
-					local args2 = ...
-					if not args2 or not module.elementzone.tabs[args.name].sections[args2.section] then return end
+				CreateButton = function(self, Properties)
+					local Frame3 = CreateInstance('Frame', {
+						BackgroundColor3 = Color3.fromRGB(59, 59, 59),
+						BorderSizePixel = 0,
+						Parent = Frame2,
+						Size = UDim2.new(1, 0, 0, 45),
+						Name = Properties.Name,
+					})
 					--
-					local layoutorder = module.elementzone.tabs[args.name].sections[args2.section].order + #module.elementzone.tabs[args.name].sections[args2.section].items + 2
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 8),
+						Parent = Frame3,
+					})
 					--
-					local frame7 = Instance.new('Frame')
-					frame7.BackgroundColor3 = Color3.fromRGB(59, 59, 59)
-					frame7.BorderSizePixel = 0
-					frame7.LayoutOrder = layoutorder
-					frame7.Size = UDim2.new(1, 0, 0, 45)
-					frame7.Parent = frame4
-					frame7.Name = args2.name
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = Frame3,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
 					--
-					local uicorner6 = Instance.new('UICorner')
-					uicorner6.CornerRadius = UDim.new(0, 8)
-					uicorner6.Parent = frame7
+					local TextButton3 = CreateInstance('TextButton', {
+						BackgroundColor3 = Color3.fromRGB(145, 3, 239),
+						BorderSizePixel = 0,
+						TextColor3 = Color3.fromRGB(255, 255, 255),
+						TextSize = 13,
+						Position = UDim2.new(0.781, 0, 0.205, 0),
+						Parent = Frame3,
+						Font = Enum.Font.SourceSansBold,
+						Size = UDim2.new(0, 90, 0, 25),
+						Text = Properties.Text,
+					})
 					--
-					local uistroke2 = Instance.new('UIStroke')
-					uistroke2.Transparency = 0.9
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 5),
+						Parent = TextButton3,
+					})
 					--
-					local textlabel10 = Instance.new('TextLabel')
-					textlabel10.BackgroundTransparency = 1
-					textlabel10.BorderSizePixel = 0
-					textlabel10.TextXAlignment = Enum.TextXAlignment.Left
-					textlabel10.TextColor3 = Color3.fromRGB(255, 255, 255)
-					textlabel10.TextSize = 16
-					textlabel10.Position = UDim2.new(0.027, 0, args2.note ~= nil and 0 or 0.5, args2.note ~= nil and 0 or -8)
-					textlabel10.Parent = frame7
-					textlabel10.Font = Enum.Font.SourceSansBold
-					textlabel10.Size = UDim2.new(0, 200, 0, args2.note ~= nil and 28 or 16)
-					textlabel10.Text = args2.name
-					textlabel10.Name = 'Name'
+					CreateInstance('TextLabel', {
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						TextColor3 = Color3.fromRGB(255, 255, 255),
+						TextSize = 16,
+						Position = UDim2.new(0.027, 0, Properties.Notice ~= nil and 0 or 0.5, Properties.Notice ~= nil and 0 or -8),
+						Parent = Frame3,
+						Font = Enum.Font.SourceSansBold,
+						Size = UDim2.new(0, 200, 0, Properties.Notice ~= nil and 28 or 16),
+						Text = Properties.Name,
+						Name = 'Name',
+					})
 					--
-					if args2.note then
-						local textlabel11 = Instance.new('TextLabel')
-						textlabel11.BackgroundTransparency = 1
-						textlabel11.BorderSizePixel = 0
-						textlabel11.TextXAlignment = Enum.TextXAlignment.Left
-						textlabel11.TextColor3 = Color3.fromRGB(133, 133, 133)
-						textlabel11.TextSize = 12
-						textlabel11.Position = UDim2.new(0.027, 0, 0, 26)
-						textlabel11.Parent = frame7
-						textlabel11.Font = Enum.Font.SourceSansBold
-						textlabel11.Size = UDim2.new(0, 200, 0, 18)
-						textlabel11.Text = args2.note
-						textlabel11.Name = 'Note'
+					if Properties.Notice then
+						CreateInstance('TextLabel', {
+							BackgroundTransparency = 1,
+							BorderSizePixel = 0,
+							TextXAlignment = Enum.TextXAlignment.Left,
+							TextColor3 = Color3.fromRGB(133, 133, 133),
+							TextSize = 12,
+							Position = UDim2.new(0.027, 0, 0, 26),
+							Parent = Frame3,
+							Font = Enum.Font.SourceSansBold,
+							Size = UDim2.new(0, 200, 0, 18),
+							Text = Properties.Notice,
+							Name = 'Note',
+						})
 					end
 					--
-					local textbutton3 = Instance.new('TextButton')
-					textbutton3.BackgroundColor3 = args2.default and Color3.fromRGB(145, 2, 239) or Color3.fromRGB(28, 29, 28)
-					textbutton3.BorderSizePixel = 0
-					textbutton3.Position = UDim2.new(0.913, 0, 0.322, 0)
-					textbutton3.Parent = frame7
-					textbutton3.Font = Enum.Font.SourceSansBold
-					textbutton3.Size = UDim2.new(0, 30, 0, 16)
-					textbutton3.Text = ''
+					TextButton3.MouseButton1Click:Connect(function()
+						if Properties.Callback then
+							Properties.Callback()
+						end
+					end)
+				end,
+				--
+				CreateToggle = function(self, Properties)
+					local Frame3 = CreateInstance('Frame', {
+						BackgroundColor3 = Color3.fromRGB(59, 59, 59),
+						BorderSizePixel = 0,
+						Parent = Frame2,
+						Size = UDim2.new(1, 0, 0, 45),
+						Name = Properties.Name,
+					})
 					--
-					local uicorner7 = Instance.new('UICorner')
-					uicorner7.CornerRadius = UDim.new(0, 8)
-					uicorner7.Parent = textbutton3
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 8),
+						Parent = Frame3,
+					})
 					--
-					local frame8 = Instance.new('Frame')
-					frame8.BackgroundColor3 = args2.default and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(115, 115, 115)
-					frame8.BorderSizePixel = 0
-					frame8.Position = UDim2.new(0, 2, 0.125, 0)
-					frame8.Parent = textbutton3
-					frame8.Size = UDim2.new(0, 12, 0, 12)
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = Frame3,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
 					--
-					local uicorner8 = Instance.new('UICorner')
-					uicorner8.CornerRadius = UDim.new(1, 0)
-					uicorner8.Parent = frame8
+					local TextButton3 = CreateInstance('TextButton', {
+						BackgroundColor3 = Properties.Default and Color3.fromRGB(145, 3, 239) or Color3.fromRGB(29, 29, 29),
+						AutoButtonColor = false,
+						BorderSizePixel = 0,
+						Position = UDim2.new(0.913, 0, 0.322, 0),
+						Parent = Frame3,
+						Size = UDim2.new(0, 30, 0, 16),
+						Text = '',
+					})
 					--
-					textbutton3.MouseButton1Click:Connect(function()
-						if textbutton3.BackgroundColor3 == Color3.fromRGB(145, 2, 239) then
-							textbutton3.BackgroundColor3 = Color3.fromRGB(28, 29, 28)
-							frame8.BackgroundColor3 = Color3.fromRGB(115, 115, 115)
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(1, 0),
+						Parent = TextButton3,
+					})
+					--
+					local Frame4 = CreateInstance('Frame', {
+						BackgroundColor3 = Properties.Default and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(115, 115, 115),
+						BorderSizePixel = 0,
+						Position = UDim2.new(Properties.Default and 0.45 or 0, 2, 0.125, 0),
+						Parent = TextButton3,
+						Size = UDim2.new(0, 12, 0, 12),
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(1, 0),
+						Parent = Frame4,
+					})
+					--
+					CreateInstance('TextLabel', {
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						TextColor3 = Color3.fromRGB(255, 255, 255),
+						TextSize = 16,
+						Position = UDim2.new(0.027, 0, Properties.Notice ~= nil and 0 or 0.5, Properties.Notice ~= nil and 0 or -8),
+						Parent = Frame3,
+						Font = Enum.Font.SourceSansBold,
+						Size = UDim2.new(0, 200, 0, Properties.Notice ~= nil and 28 or 16),
+						Text = Properties.Name,
+						Name = 'Name',
+					})
+					--
+					if Properties.Notice then
+						CreateInstance('TextLabel', {
+							BackgroundTransparency = 1,
+							BorderSizePixel = 0,
+							TextXAlignment = Enum.TextXAlignment.Left,
+							TextColor3 = Color3.fromRGB(133, 133, 133),
+							TextSize = 12,
+							Position = UDim2.new(0.027, 0, 0, 26),
+							Parent = Frame3,
+							Font = Enum.Font.SourceSansBold,
+							Size = UDim2.new(0, 200, 0, 18),
+							Text = Properties.Notice,
+							Name = 'Note',
+						})
+					end
+					--
+					local Tween = nil
+					TextButton3.MouseButton1Click:Connect(function()
+						if Tween then Tween:Cancel() end
+						Properties.Default = not Properties.Default
+						--
+						if Properties.Default then
+							TextButton3.BackgroundColor3 = Color3.fromRGB(145, 3, 239)
+							Frame4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 							--
+							Tween = TweenService:Create(Frame4, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {
+								Position = UDim2.new(0.45, 2, 0.125, 0)
+							})
+							--
+							Tween.Completed:Connect(function() Tween = nil end)
+							Tween:Play()
 						else
-							textbutton3.BackgroundColor3 = Color3.fromRGB(145, 2, 239)
-							frame8.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+							TextButton3.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+							Frame4.BackgroundColor3 = Color3.fromRGB(115, 115, 115)
 							--
+							Tween = TweenService:Create(Frame4, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {
+								Position = UDim2.new(0, 2, 0.125, 0)
+							})
+							--
+							Tween.Completed:Connect(function() Tween = nil end)
+							Tween:Play()
 						end
 						--
-						args2.callback(textbutton3.BackgroundColor3 == Color3.fromRGB(145, 2, 239) and true or false)
+						if Properties.Callback then
+							Properties.Callback(Properties.Default)
+						end
+						--
+						Library.ElementZone.Toggles[Frame2.Name][Properties.Name] = Properties.Default
 					end)
 					--
-					local functions3; functions3 = {
-						set = function(value)
-							if value then
-								textbutton3.BackgroundColor3 = Color3.fromRGB(145, 2, 239)
-								frame8.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-							else
-								textbutton3.BackgroundColor3 = Color3.fromRGB(28, 29, 28)
-								frame8.BackgroundColor3 = Color3.fromRGB(115, 115, 115)
-							end
+					if Properties.Default and Properties.Callback then
+						Properties.Callback(Properties.Default)
+					end
+					--
+					if not Library.ElementZone.Toggles[Frame2.Name] then Library.ElementZone.Toggles[Frame2.Name] = {} end
+					Library.ElementZone.Toggles[Frame2.Name][Properties.Name] = Properties.Default
+				end,
+				--
+				CreateSlider = function(self, Properties)
+					local Frame3 = CreateInstance('Frame', {
+						BackgroundColor3 = Color3.fromRGB(59, 59, 59),
+						BorderSizePixel = 0,
+						Parent = Frame2,
+						Size = UDim2.new(1, 0, 0, 45),
+						Name = Properties.Name,
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 8),
+						Parent = Frame3,
+					})
+					--
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = Frame3,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
+					--
+					local Frame4 = CreateInstance('Frame', {
+						BackgroundColor3 = Color3.fromRGB(29, 29, 29),
+						BorderSizePixel = 0,
+						Position = UDim2.new(0.588, 0, 0.456, 0),
+						Parent = Frame3,
+						Size = UDim2.new(0, 128, 0, 4),
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(1, 0),
+						Parent = Frame4,
+					})
+					--
+					local Frame5 = CreateInstance('Frame', {
+						BackgroundColor3 = Color3.fromRGB(145, 3, 239),
+						BorderSizePixel = 0,
+						Parent = Frame4,
+						Size = UDim2.new(0.2, 0, 1, 0),
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(1, 0),
+						Parent = Frame5,
+					})
+					--
+					local Frame6 = CreateInstance('Frame', {
+						BackgroundColor3 = Color3.fromRGB(145, 3, 239),
+						BorderSizePixel = 0,
+						Position = UDim2.new(0.2, -6, 0.5, -6),
+						Parent = Frame4,
+						Size = UDim2.new(0, 12, 0, 12),
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(1, 0),
+						Parent = Frame6,
+					})
+					--
+					local Frame7 = CreateInstance('Frame', {
+						BackgroundColor3 = Color3.fromRGB(29, 29, 29),
+						BorderSizePixel = 0,
+						Position = UDim2.new(0.894, 0, 0.5, -9),
+						Parent = Frame3,
+						Size = UDim2.new(0, 36, 0, 18),
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 4),
+						Parent = Frame7,
+					})
+					--
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = Frame7,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
+					--
+					local TextBox4 = CreateInstance('TextBox', {
+						BackgroundTransparency = 1,
+						ClearTextOnFocus = false,
+						BorderSizePixel = 0,
+						TextColor3 = Color3.fromRGB(255, 255, 255),
+						TextSize = 12,
+						Parent = Frame7,
+						Font = Enum.Font.SourceSans,
+						Size = UDim2.new(1, 0, 1, 0),
+						Text = Properties.Default,
+					})
+					--
+					CreateInstance('TextLabel', {
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						TextColor3 = Color3.fromRGB(255, 255, 255),
+						TextSize = 16,
+						Position = UDim2.new(0.027, 0, Properties.Notice ~= nil and 0 or 0.5, Properties.Notice ~= nil and 0 or -8),
+						Parent = Frame3,
+						Font = Enum.Font.SourceSansBold,
+						Size = UDim2.new(0, 200, 0, Properties.Notice ~= nil and 28 or 16),
+						Text = Properties.Name,
+						Name = 'Name',
+					})
+					--
+					if Properties.Notice then
+						CreateInstance('TextLabel', {
+							BackgroundTransparency = 1,
+							BorderSizePixel = 0,
+							TextXAlignment = Enum.TextXAlignment.Left,
+							TextColor3 = Color3.fromRGB(133, 133, 133),
+							TextSize = 12,
+							Position = UDim2.new(0.027, 0, 0, 26),
+							Parent = Frame3,
+							Font = Enum.Font.SourceSansBold,
+							Size = UDim2.new(0, 200, 0, 18),
+							Text = Properties.Notice,
+							Name = 'Note',
+						})
+					end
+					--
+					local Current = Properties.Default
+					local function UpdatePosition(Value)
+						Value, Current = math.max(Properties.Min, math.min(Properties.Max, Value)), math.max(Properties.Min, math.min(Properties.Max, Value))
+						--
+						local Percentage = (Value - Properties.Min) / (Properties.Max - Properties.Min)
+						Frame5.Size = UDim2.new(Percentage, 0, 1, 0)
+						--
+						Frame6.Position = UDim2.new(0, (Percentage * Frame4.AbsoluteSize.X) - 4, 0.5, -6)
+						--
+						Value = string.format('%g', math.floor(Value / Properties.Increment + 0.5) * Properties.Increment)
+						--
+						TextBox4.Text = Value
+						Library.ElementZone.Sliders[Frame2.Name][Properties.Name] = Current
+						--
+						if Properties.Callback then
+							Properties.Callback(Value)
+						end
+					end
+					--
+					local function UpdateMouse()
+						local Value = Properties.Min + (math.clamp(UserInputService:GetMouseLocation().X - Frame4.AbsolutePosition.X, 0, Frame4.AbsolutePosition.X) / Frame4.AbsoluteSize.X * (Properties.Max - Properties.Min))
+						Value = math.max(Properties.Min, math.min(Properties.Max, Value))
+						--
+						UpdatePosition(Value)
+					end
+					--
+					local Dragging = false
+					--
+					Frame6.InputBegan:Connect(function(Input)
+						if Input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+						--
+						Dragging = true
+						UpdateMouse()
+					end)
+					--
+					Frame6.InputEnded:Connect(function(Input)
+						if Input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+						--
+						Dragging = false
+					end)
+					--
+					UserInputService.InputChanged:Connect(function(Input)
+						if not Dragging or Input.UserInputType ~= Enum.UserInputType.MouseMovement then return end
+						--
+						UpdateMouse()
+					end)
+					--
+					TextBox4:GetPropertyChangedSignal('Text'):Connect(function()
+						if not tonumber(TextBox4.Text) then return end
+						--
+						UpdatePosition(tonumber(TextBox4.Text))
+					end)
+					--
+					TextBox4.FocusLost:Connect(function()
+						if not tonumber(TextBox4.Text) then TextBox4.Text = Properties.Min return end
+					end)
+					--
+					if not Library.ElementZone.Sliders[Frame2.Name] then Library.ElementZone.Sliders[Frame2.Name] = {} end
+					Library.ElementZone.Sliders[Frame2.Name][Properties.Name] = Properties.Default
+					--
+					UpdatePosition(Properties.Default)
+				end,
+				--
+				CreateMinis = function()
+					local Frame3 = CreateInstance('Frame', {
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						Parent = Frame2,
+						Size = UDim2.new(1, 0, 0, 0),
+					})
+					--
+					local MiniLeft = CreateInstance('Frame', {
+						BackgroundColor3 = Color3.fromRGB(59, 59, 59),
+						BorderSizePixel = 0,
+						Position = UDim2.new(0, 6, 0, 0),
+						Parent = Frame3,
+						Size = UDim2.new(0, 220, 0, 0),
+						Name = 'Mini_left',
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 6),
+						Parent = MiniLeft,
+					})
+					--
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = MiniLeft,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
+					--
+					CreateInstance('UIListLayout', {
+						SortOrder = Enum.SortOrder.LayoutOrder,
+						Parent = MiniLeft,
+					})
+					--
+					local MiniRight = CreateInstance('Frame', {
+						BackgroundColor3 = Color3.fromRGB(59, 59, 59),
+						BorderSizePixel = 0,
+						Position = UDim2.new(0, 232, 0, 0),
+						Parent = Frame3,
+						Size = UDim2.new(0, 220, 0, 0),
+						Name = 'Mini_right',
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 6),
+						Parent = MiniRight,
+					})
+					--
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = MiniRight,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
+					--
+					CreateInstance('UIListLayout', {
+						SortOrder = Enum.SortOrder.LayoutOrder,
+						Parent = MiniRight,
+					})
+					--
+					MiniLeft.ChildAdded:Connect(function(Child)
+						if not Child:IsA('Frame') then return end
+						--
+						if #MiniLeft:GetChildren() == 4 then
+							MiniLeft.Size = UDim2.new(0, 220, 0, 28)
+							Frame3.Size = UDim2.new(1, 0, 0, 28)
+						elseif #MiniLeft:GetChildren() == 5 then
+							MiniLeft.Size = UDim2.new(0, 220, 0, 56)
+							Frame3.Size = UDim2.new(1, 0, 0, 56)
+						end
+					end)
+					--
+					MiniRight.ChildAdded:Connect(function(Child)
+						if not Child:IsA('Frame') then return end
+						--
+						if #MiniRight:GetChildren() == 4 then
+							MiniRight.Size = UDim2.new(0, 220, 0, 28)
+							Frame3.Size = UDim2.new(1, 0, 0, 28)
+						elseif #MiniRight:GetChildren() == 5 then
+							MiniRight.Size = UDim2.new(0, 220, 0, 56)
+							Frame3.Size = UDim2.new(1, 0, 0, 56)
+						end
+					end)
+					--
+					local Functions; Functions = {
+						CreateDropdown = function(self, Properties)
+							local Frame4 = CreateInstance('Frame', {
+								BackgroundTransparency = 1,
+								BorderSizePixel = 0,
+								Parent = Properties.Position == 'Left' and MiniLeft or Properties.Position == 'Right' and MiniRight,
+								Size = UDim2.new(1, 0, 0, 28),
+							})
 							--
-							args2.callback(textbutton3.BackgroundColor3 == Color3.fromRGB(145, 2, 239) and true or false)
+							local TextButton3 = CreateInstance('TextButton', {
+								BackgroundColor3 = Color3.fromRGB(29, 29, 29),
+								AutoButtonColor = false,
+								BorderSizePixel = 0,
+								Position = UDim2.new(1, -108, 0.5, -9),
+								Parent = Frame4,
+								Size = UDim2.new(0, 104, 0, 18),
+								Text = '',
+							})
+							--
+							CreateInstance('UICorner', {
+								CornerRadius = UDim.new(0, 4),
+								Parent = TextButton3,
+							})
+							--
+							CreateInstance('UIStroke', {
+								Transparency = 0.9,
+								Parent = TextButton3,
+								Color = Color3.fromRGB(133, 133, 133),
+							})
+							--
+							local ImageLabel4 = CreateInstance('ImageLabel', {
+								BackgroundTransparency = 1,
+								BorderSizePixel = 0,
+								Position = UDim2.new(1, -14, 0.5, -5),
+								Parent = TextButton3,
+								Image = 'rbxassetid://13116390649',
+								Size = UDim2.new(0, 10, 0, 10),
+							})
+							--
+							CreateInstance('TextLabel', {
+								BackgroundTransparency = 1,
+								BorderSizePixel = 0,
+								TextXAlignment = Enum.TextXAlignment.Left,
+								TextColor3 = Color3.fromRGB(255, 255, 255),
+								TextSize = 11,
+								Position = UDim2.new(0, 6, 0, 0),
+								Parent = TextButton3,
+								Font = Enum.Font.SourceSansBold,
+								Size = UDim2.new(1, -20, 1, 0),
+								Text = Properties.Default,
+							})
+							--
+							CreateInstance('TextLabel', {
+								BackgroundTransparency = 1,
+								BorderSizePixel = 0,
+								TextXAlignment = Enum.TextXAlignment.Left,
+								TextColor3 = Color3.fromRGB(255, 255, 255),
+								TextSize = 12,
+								Position = UDim2.new(0, 8, 0, 0),
+								Parent = Frame4,
+								Font = Enum.Font.SourceSansBold,
+								Size = UDim2.new(0.6, -8, 1, 0),
+								Text = Properties.Name,
+							})
+							--
+							if not Library.ElementZone.Dropdowns.Minis[Frame2.Name] then Library.ElementZone.Dropdowns.Minis[Frame2.Name] = {} end
+							Library.ElementZone.Dropdowns.Minis[Frame2.Name][Properties.Name] = Properties.Default
 						end,
 						--
-						get = function()
-							return textbutton3.BackgroundColor3 == Color3.fromRGB(145, 2, 239) and true or false
+						CreateKeybind = function(self, Properties)
+							local Frame4 = CreateInstance('Frame', {
+								BackgroundTransparency = 1,
+								BorderSizePixel = 0,
+								Parent = Properties.Position == 'Left' and MiniLeft or Properties.Position == 'Right' and MiniRight,
+								Size = UDim2.new(1, 0, 0, 28),
+							})
+							--
+							local TextButton3 = CreateInstance('TextButton', {
+								BackgroundColor3 = Color3.fromRGB(29, 29, 29),
+								BorderSizePixel = 0,
+								TextColor3 = Color3.fromRGB(255, 255, 255),
+								TextSize = 10,
+								Position = UDim2.new(1, -68, 0.5, -9),
+								Parent = Frame4,
+								Font = Enum.Font.SourceSansBold,
+								Size = UDim2.new(0, 64, 0, 18),
+								Text = Properties.Default,
+							})
+							--
+							CreateInstance('UICorner', {
+								CornerRadius = UDim.new(0, 3),
+								Parent = TextButton3,
+							})
+							--
+							CreateInstance('UIStroke', {
+								Transparency = 0.9,
+								Parent = TextButton3,
+								Color = Color3.fromRGB(133, 133, 133),
+							})
+							--
+							CreateInstance('TextLabel', {
+								BackgroundTransparency = 1,
+								BorderSizePixel = 0,
+								TextXAlignment = Enum.TextXAlignment.Left,
+								TextColor3 = Color3.fromRGB(255, 255, 255),
+								TextSize = 12,
+								Position = UDim2.new(0, 8, 0, 0),
+								Parent = Frame4,
+								Font = Enum.Font.SourceSansBold,
+								Size = UDim2.new(0.6, -8, 1, 0),
+								Text = Properties.Name,
+							})
+							--
+							if not Library.ElementZone.Keybinds.Minis[Frame2.Name] then Library.ElementZone.Keybinds.Minis[Frame2.Name] = {} end
+							Library.ElementZone.Keybinds.Minis[Frame2.Name][Properties.Name] = Properties.Default
+						end,
+						--
+						CreateButton = function(self, Properties)
+							local Frame4 = CreateInstance('Frame', {
+								BackgroundTransparency = 1,
+								BorderSizePixel = 0,
+								Parent = Properties.Position == 'Left' and MiniLeft or Properties.Position == 'Right' and MiniRight,
+								Size = UDim2.new(1, 0, 0, 28),
+							})
+							--
+							local TextButton3 = CreateInstance('TextButton', {
+								BackgroundColor3 = Color3.fromRGB(145, 3, 239),
+								BorderSizePixel = 0,
+								TextColor3 = Color3.fromRGB(255, 255, 255),
+								TextSize = 11,
+								Position = UDim2.new(1, -68, 0.5, -9),
+								Parent = Frame4,
+								Font = Enum.Font.SourceSansBold,
+								Size = UDim2.new(0, 64, 0, 18),
+								Text = Properties.Text,
+							})
+							--
+							CreateInstance('UICorner', {
+								CornerRadius = UDim.new(0, 4),
+								Parent = TextButton3,
+							})
+							--
+							CreateInstance('TextLabel', {
+								BackgroundTransparency = 1,
+								BorderSizePixel = 0,
+								TextXAlignment = Enum.TextXAlignment.Left,
+								TextColor3 = Color3.fromRGB(255, 255, 255),
+								TextSize = 12,
+								Position = UDim2.new(0, 8, 0, 0),
+								Parent = Frame4,
+								Font = Enum.Font.SourceSansBold,
+								Size = UDim2.new(0.6, -8, 1, 0),
+								Text = Properties.Name,
+							})
+							--
+							TextButton3.MouseButton1Click:Connect(function()
+								if Properties.Callback then
+									Properties.Callback()
+								end
+							end)
+						end,
+						--
+						CreateToggle = function(self, Properties)
+							local Frame4 = CreateInstance('Frame', {
+								BackgroundTransparency = 1,
+								BorderSizePixel = 0,
+								Parent = Properties.Position == 'Left' and MiniLeft or Properties.Position == 'Right' and MiniRight,
+								Size = UDim2.new(1, 0, 0, 28),
+							})
+							--
+							local TextButton3 = CreateInstance('TextButton', {
+								BackgroundColor3 = Properties.Default and Color3.fromRGB(145, 3, 239) or Color3.fromRGB(29, 29, 29),
+								AutoButtonColor = false,
+								BorderSizePixel = 0,
+								Position = UDim2.new(1, -34, 0.5, -8),
+								Parent = Frame4,
+								Size = UDim2.new(0, 30, 0, 16),
+								Text = '',
+							})
+							--
+							CreateInstance('UICorner', {
+								CornerRadius = UDim.new(1, 0),
+								Parent = TextButton3,
+							})
+							--
+							local Frame5 = CreateInstance('Frame', {
+								BackgroundColor3 = Properties.Default and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(115, 115, 115),
+								BorderSizePixel = 0,
+								Position = UDim2.new(Properties.Default and 1 or 0, Properties.Default and -14 or 2, 0.5, -6),
+								Parent = TextButton3,
+								Size = UDim2.new(0, 12, 0, 12),
+							})
+							--
+							CreateInstance('UICorner', {
+								CornerRadius = UDim.new(1, 0),
+								Parent = Frame5,
+							})
+							--
+							CreateInstance('TextLabel', {
+								BackgroundTransparency = 1,
+								BorderSizePixel = 0,
+								TextXAlignment = Enum.TextXAlignment.Left,
+								TextColor3 = Color3.fromRGB(255, 255, 255),
+								TextSize = 12,
+								Position = UDim2.new(0, 8, 0, 0),
+								Parent = Frame4,
+								Font = Enum.Font.SourceSansBold,
+								Size = UDim2.new(0.6, -8, 1, 0),
+								Text = Properties.Name,
+							})
+							--
+							local Tween = nil
+							TextButton3.MouseButton1Click:Connect(function()
+								if Tween then Tween:Cancel() end
+								Properties.Default = not Properties.Default
+								--
+								if Properties.Default then
+									TextButton3.BackgroundColor3 = Color3.fromRGB(145, 3, 239)
+									Frame5.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+									--
+									Tween = TweenService:Create(Frame5, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {
+										Position = UDim2.new(1, -14, 0.5, -6)
+									})
+									--
+									Tween.Completed:Connect(function() Tween = nil end)
+									Tween:Play()
+								else
+									TextButton3.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+									Frame5.BackgroundColor3 = Color3.fromRGB(115, 115, 115)
+									--
+									Tween = TweenService:Create(Frame5, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {
+										Position = UDim2.new(0, 2, 0.5, -6)
+									})
+									--
+									Tween.Completed:Connect(function() Tween = nil end)
+									Tween:Play()
+								end
+								--
+								if Properties.Callback then
+									Properties.Callback(Properties.Default)
+								end
+								--
+								Library.ElementZone.Toggles.Minis[Frame2.Name][Properties.Name] = Properties.Default
+							end)
+							--
+							if Properties.Default and Properties.Callback then
+								Properties.Callback(Properties.Default)
+							end
+							--
+							if not Library.ElementZone.Toggles.Minis[Frame2.Name] then Library.ElementZone.Toggles.Minis[Frame2.Name] = {} end
+							Library.ElementZone.Toggles.Minis[Frame2.Name][Properties.Name] = Properties.Default
+						end,
+						--
+						CreateSlider = function(self, Properties)
+							local Frame4 = CreateInstance('Frame', {
+								BackgroundTransparency = 1,
+								BorderSizePixel = 0,
+								Parent = Properties.Position == 'Left' and MiniLeft or Properties.Position == 'Right' and MiniRight,
+								Size = UDim2.new(1, 0, 0, 28),
+							})
+							--
+							local Frame5 = CreateInstance('Frame', {
+								BackgroundColor3 = Color3.fromRGB(29, 29, 29),
+								BorderSizePixel = 0,
+								Position = UDim2.new(0, 103, 0.5, -2),
+								Parent = Frame4,
+								Size = UDim2.new(0, 75, 0, 4),
+							})
+							--
+							CreateInstance('UICorner', {
+								CornerRadius = UDim.new(0, 8),
+								Parent = Frame5,
+							})
+							--
+							local Frame6 = CreateInstance('Frame', {
+								BackgroundColor3 = Color3.fromRGB(145, 3, 239),
+								BorderSizePixel = 0,
+								Parent = Frame5,
+								Size = UDim2.new(0, 0, 1, 0),
+							})
+							--
+							CreateInstance('UICorner', {
+								CornerRadius = UDim.new(0, 8),
+								Parent = Frame6,
+							})
+							--
+							local Frame7 = CreateInstance('Frame', {
+								BackgroundColor3 = Color3.fromRGB(145, 3, 239),
+								BorderSizePixel = 0,
+								Position = UDim2.new(0, -4, 0.5, -4),
+								ZIndex = 3,
+								Parent = Frame5,
+								Size = UDim2.new(0, 8, 0, 8),
+							})
+							--
+							CreateInstance('UICorner', {
+								CornerRadius = UDim.new(1, 0),
+								Parent = Frame7,
+							})
+							--
+							local Frame8 = CreateInstance('Frame', {
+								BackgroundColor3 = Color3.fromRGB(29, 29, 29),
+								BorderSizePixel = 0,
+								Position = UDim2.new(1, -36, 0.5, -9),
+								Parent = Frame4,
+								Size = UDim2.new(0, 32, 0, 18),
+							})
+							--
+							CreateInstance('UICorner', {
+								CornerRadius = UDim.new(0, 3),
+								Parent = Frame8,
+							})
+							--
+							CreateInstance('UIStroke', {
+								Transparency = 0.9,
+								Parent = Frame8,
+								Color = Color3.fromRGB(133, 133, 133),
+							})
+							--
+							local TextBox4 = CreateInstance('TextBox', {
+								BackgroundTransparency = 1,
+								ClearTextOnFocus = false,
+								TextColor3 = Color3.fromRGB(255, 255, 255),
+								TextSize = 10,
+								Parent = Frame8,
+								Font = Enum.Font.SourceSans,
+								Size = UDim2.new(1, 0, 1, 0),
+								Text = Properties.Default,
+							})
+							--
+							CreateInstance('TextLabel', {
+								BackgroundTransparency = 1,
+								BorderSizePixel = 0,
+								TextXAlignment = Enum.TextXAlignment.Left,
+								TextColor3 = Color3.fromRGB(255, 255, 255),
+								TextSize = 12,
+								Position = UDim2.new(0, 8, 0, 0),
+								Parent = Frame4,
+								Font = Enum.Font.SourceSansBold,
+								Size = UDim2.new(0.6, -8, 1, 0),
+								Text = Properties.Name,
+							})
+							--
+							local Current = Properties.Default
+							local function UpdatePosition(Value)
+								Value, Current = math.max(Properties.Min, math.min(Properties.Max, Value)), math.max(Properties.Min, math.min(Properties.Max, Value))
+								--
+								local Percentage = (Value - Properties.Min) / (Properties.Max - Properties.Min)
+								Frame6.Size = UDim2.new(Percentage, 0, 1, 0)
+								--
+								Frame7.Position = UDim2.new(0, (Percentage * Frame5.AbsoluteSize.X) - 4, 0.5, -4)
+								--
+								Value = string.format('%g', math.floor(Value / Properties.Increment + 0.5) * Properties.Increment)
+								--
+								TextBox4.Text = Value
+								Library.ElementZone.Sliders.Minis[Frame2.Name][Properties.Name] = Current
+								--
+								if Properties.Callback then
+									Properties.Callback(Value)
+								end
+							end
+							--
+							local function UpdateMouse()
+								local Value = Properties.Min + (math.clamp(UserInputService:GetMouseLocation().X - Frame5.AbsolutePosition.X, 0, Frame5.AbsolutePosition.X) / Frame5.AbsoluteSize.X * (Properties.Max - Properties.Min))
+								Value = math.max(Properties.Min, math.min(Properties.Max, Value))
+								--
+								UpdatePosition(Value)
+							end
+							--
+							local Dragging = false
+							--
+							Frame7.InputBegan:Connect(function(Input)
+								if Input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+								--
+								Dragging = true
+								UpdateMouse()
+							end)
+							--
+							Frame7.InputEnded:Connect(function(Input)
+								if Input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+								--
+								Dragging = false
+							end)
+							--
+							UserInputService.InputChanged:Connect(function(Input)
+								if not Dragging or Input.UserInputType ~= Enum.UserInputType.MouseMovement then return end
+								--
+								UpdateMouse()
+							end)
+							--
+							TextBox4:GetPropertyChangedSignal('Text'):Connect(function()
+								if not tonumber(TextBox4.Text) then return end
+								--
+								UpdatePosition(tonumber(TextBox4.Text))
+							end)
+							--
+							TextBox4.FocusLost:Connect(function()
+								if not tonumber(TextBox4.Text) then TextBox4.Text = Properties.Min return end
+							end)
+							--
+							if not Library.ElementZone.Sliders.Minis[Frame2.Name] then Library.ElementZone.Sliders.Minis[Frame2.Name] = {} end
+							Library.ElementZone.Sliders.Minis[Frame2.Name][Properties.Name] = Properties.Default
+							--
+							UpdatePosition(Properties.Default)
 						end,
 					}
 					--
-                    table.insert(module.elementzone.tabs[args.name].sections[args2.section].items, args2.name)
-					--
-					return functions3
+					return Functions
 				end,
 			}
 			--
-			return functions2
+			Tabs.CurrentY = Position + 37
+			Tabs.Sections[Properties.Section].Buttons[Properties.Name] = {
+				Functions = Functions,
+				Position = Position,
+				Name = Properties.Name,
+			}
+			--
+			return Functions
 		end,
 	}
 	--
-	return functions
+	return ScreenGui and Functions
 end
 
--- // return
-return module
+function Library:ApplySettingsTab(Properties)
+	Properties:CreateSection('UI')
+	--
+	Properties:CreateKeybind({
+		Callback = function(Value)
+
+		end,
+		--
+		Default = Enum.KeyCode.RightShift.Name,
+		--
+		Notice = 'Toggle UI visibility',
+		Name = 'Hide Bind',
+	})
+	--
+	Properties:CreateDropdown({
+		Callback = function(Value)
+			
+		end,
+		--
+		Options = {'100%', '75%', '50%', '25%'},
+		Default = '100%',
+		--
+		Notice = 'Scale interface size',
+		Name = 'UI Scale',
+	})
+	--
+	Properties:CreateSection('Config')
+	--
+	Properties:CreateTextbox({
+		Callback = function(Value)
+			
+		end,
+		--
+		PlaceholderText = 'config name',
+		--
+		Notice = nil,
+		Name = 'New Name',
+	})
+end
+
+-- // Return
+return Library
