@@ -46,7 +46,7 @@ end
 function Library:CreateWindow(Properties)
 	Library.Window = CreateInstance('ScreenGui', {
 		ResetOnSpawn = false,
-		Parent = CoreGui,
+		Parent = game.Players.LocalPlayer.PlayerGui,
 		Name = 'UIv2',
 	})
 	--
@@ -310,15 +310,18 @@ function Library:CreateWindow(Properties)
 
 		CreateTab = function(self, Properties)
 			if not Tabs.Sections[Properties.Section] then self.CreateSection(self, Properties.Section) end
-			if Tabs.Sections[Properties.Section].Buttons[Properties.Name] then return end
 			--
 			local Position = nil
 			if #Tabs.Sections[Properties.Section].Buttons == 0 then
 				Position = Tabs.CurrentY + 20
 			else
-				local LastButton = Tabs.Sections[Properties.Section].Buttons[#Tabs.Sections[Properties.Section].Buttons]
-				Position = LastButton.Position + 29
+				Position = Tabs.Sections[Properties.Section].Buttons[#Tabs.Sections[Properties.Section].Buttons].Position + 29
 			end
+			--
+			Tabs.CurrentY = Position + 37
+			Tabs.Sections[Properties.Section].Buttons[Properties.Name] = {
+				Position = Position,
+			}
 			--
 			local TextButton2 = CreateInstance('TextButton', {
 				BackgroundTransparency = 1,
@@ -1693,13 +1696,6 @@ function Library:CreateWindow(Properties)
 						MiniLeft:Destroy()
 					end
 				end,
-			}
-			--
-			Tabs.CurrentY = Position + 37
-			Tabs.Sections[Properties.Section].Buttons[Properties.Name] = {
-				Functions = Functions,
-				Position = Position,
-				Name = Properties.Name,
 			}
 			--
 			return Functions
