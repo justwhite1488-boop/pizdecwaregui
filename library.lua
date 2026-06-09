@@ -1689,12 +1689,6 @@ function Library:CreateWindow(Properties)
 						Value.Left = true
 						Functions[Index](Value)
 					end
-					--
-					if #Properties.Elements.Right == 0 then
-						MiniRight:Destroy()
-					elseif #Properties.Elements.Left == 0 then
-						MiniLeft:Destroy()
-					end
 				end,
 			}
 			--
