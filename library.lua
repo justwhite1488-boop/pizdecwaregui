@@ -1,7 +1,6 @@
 -- // Services
 local UserInputService = game:GetService('UserInputService')
 local TweenService = game:GetService('TweenService')
-local Players = game:GetService('Players')
 local CoreGui = game:GetService('CoreGui')
 
 -- // Variables
@@ -29,9 +28,6 @@ local Library = {
 	Window = nil,
 }
 
-local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer.PlayerGui
-
 local Tabs = {
 	CurrentY = 4,
 	Sections = {},
@@ -50,7 +46,7 @@ end
 function Library:CreateWindow(Properties)
 	Library.Window = CreateInstance('ScreenGui', {
 		ResetOnSpawn = false,
-		Parent = LocalPlayer.PlayerGui,
+		Parent = CoreGui,
 		Name = 'UIv2',
 	})
 	--
@@ -1754,6 +1750,16 @@ function Library:ApplySettingsTab(Properties)
 		--
 		Notice = nil,
 		Name = 'New Name',
+	})
+	--
+	Properties:CreateButton({
+		Callback = function()
+			Library.Window:Destroy()
+		end,
+		--
+		Notice = nil,
+		Text = 'Unload',
+		Name = 'Unload current gui',
 	})
 end
 
