@@ -50,7 +50,7 @@ end
 function Library:CreateWindow(Properties)
 	Library.Window = CreateInstance('ScreenGui', {
 		ResetOnSpawn = false,
-		Parent = CoreGui,
+		Parent = LocalPlayer.PlayerGui,
 		Name = 'UIv2',
 	})
 	--
@@ -1190,7 +1190,7 @@ function Library:CreateWindow(Properties)
 					UpdatePosition(Properties.Default)
 				end,
 				--
-				CreateMinis = function()
+				CreateMinis = function(self, Properties)
 					local Frame3 = CreateInstance('Frame', {
 						BackgroundTransparency = 1,
 						BorderSizePixel = 0,
@@ -1198,91 +1198,86 @@ function Library:CreateWindow(Properties)
 						Size = UDim2.new(1, 0, 0, 0),
 					})
 					--
-					local MiniRight
-					local MiniLeft
+					local MiniRight = CreateInstance('Frame', {
+						BackgroundColor3 = Color3.fromRGB(59, 59, 59),
+						BorderSizePixel = 0,
+						Position = UDim2.new(0, 232, 0, 0),
+						Parent = Frame3,
+						Size = UDim2.new(0, 220, 0, 0),
+						Name = 'Mini_right',
+					})
+					--
+					local MiniLeft = CreateInstance('Frame', {
+						BackgroundColor3 = Color3.fromRGB(59, 59, 59),
+						BorderSizePixel = 0,
+						Position = UDim2.new(0, 6, 0, 0),
+						Parent = Frame3,
+						Size = UDim2.new(0, 220, 0, 0),
+						Name = 'Mini_left',
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 6),
+						Parent = MiniRight,
+					})
+					--
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = MiniRight,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
+					--
+					CreateInstance('UIListLayout', {
+						SortOrder = Enum.SortOrder.LayoutOrder,
+						Parent = MiniRight,
+					})
+					--
+					CreateInstance('UICorner', {
+						CornerRadius = UDim.new(0, 6),
+						Parent = MiniLeft,
+					})
+					--
+					CreateInstance('UIStroke', {
+						Transparency = 0.9,
+						Parent = MiniLeft,
+						Color = Color3.fromRGB(133, 133, 133),
+					})
+					--
+					CreateInstance('UIListLayout', {
+						SortOrder = Enum.SortOrder.LayoutOrder,
+						Parent = MiniLeft,
+					})
+					--
+					MiniRight.ChildAdded:Connect(function(Child)
+						if not Child:IsA('Frame') then return end
+						--
+						if #MiniRight:GetChildren() == 4 then
+							MiniRight.Size = UDim2.new(0, 220, 0, 28)
+							Frame3.Size = UDim2.new(1, 0, 0, 28)
+						elseif #MiniRight:GetChildren() == 5 then
+							MiniRight.Size = UDim2.new(0, 220, 0, 56)
+							Frame3.Size = UDim2.new(1, 0, 0, 56)
+						end
+					end)
+					--
+					MiniLeft.ChildAdded:Connect(function(Child)
+						if not Child:IsA('Frame') then return end
+						--
+						if #MiniLeft:GetChildren() == 4 then
+							MiniLeft.Size = UDim2.new(0, 220, 0, 28)
+							Frame3.Size = UDim2.new(1, 0, 0, 28)
+						elseif #MiniLeft:GetChildren() == 5 then
+							MiniLeft.Size = UDim2.new(0, 220, 0, 56)
+							Frame3.Size = UDim2.new(1, 0, 0, 56)
+						end
+					end)
 					--
 					local Functions; Functions = {
-						CreateDropdown = function(self, Properties)
-							if Properties.Position == 'Right' then
-								MiniRight = MiniRight or CreateInstance('Frame', {
-									BackgroundColor3 = Color3.fromRGB(59, 59, 59),
-									BorderSizePixel = 0,
-									Position = UDim2.new(0, 232, 0, 0),
-									Parent = Frame3,
-									Size = UDim2.new(0, 220, 0, 0),
-									Name = 'Mini_right',
-								})
-								--
-								CreateInstance('UICorner', {
-									CornerRadius = UDim.new(0, 6),
-									Parent = MiniRight,
-								})
-								--
-								CreateInstance('UIStroke', {
-									Transparency = 0.9,
-									Parent = MiniRight,
-									Color = Color3.fromRGB(133, 133, 133),
-								})
-								--
-								CreateInstance('UIListLayout', {
-									SortOrder = Enum.SortOrder.LayoutOrder,
-									Parent = MiniRight,
-								})
-								--
-								MiniRight.ChildAdded:Connect(function(Child)
-									if not Child:IsA('Frame') then return end
-									--
-									if #MiniRight:GetChildren() == 4 then
-										MiniRight.Size = UDim2.new(0, 220, 0, 28)
-										Frame3.Size = UDim2.new(1, 0, 0, 28)
-									elseif #MiniRight:GetChildren() == 5 then
-										MiniRight.Size = UDim2.new(0, 220, 0, 56)
-										Frame3.Size = UDim2.new(1, 0, 0, 56)
-									end
-								end)
-							elseif Properties.Position == 'Left' then
-								MiniLeft = MiniLeft or CreateInstance('Frame', {
-									BackgroundColor3 = Color3.fromRGB(59, 59, 59),
-									BorderSizePixel = 0,
-									Position = UDim2.new(0, 6, 0, 0),
-									Parent = Frame3,
-									Size = UDim2.new(0, 220, 0, 0),
-									Name = 'Mini_left',
-								})
-								--
-								CreateInstance('UICorner', {
-									CornerRadius = UDim.new(0, 6),
-									Parent = MiniLeft,
-								})
-								--
-								CreateInstance('UIStroke', {
-									Transparency = 0.9,
-									Parent = MiniLeft,
-									Color = Color3.fromRGB(133, 133, 133),
-								})
-								--
-								CreateInstance('UIListLayout', {
-									SortOrder = Enum.SortOrder.LayoutOrder,
-									Parent = MiniLeft,
-								})
-								--
-								MiniLeft.ChildAdded:Connect(function(Child)
-									if not Child:IsA('Frame') then return end
-									--
-									if #MiniLeft:GetChildren() == 4 then
-										MiniLeft.Size = UDim2.new(0, 220, 0, 28)
-										Frame3.Size = UDim2.new(1, 0, 0, 28)
-									elseif #MiniLeft:GetChildren() == 5 then
-										MiniLeft.Size = UDim2.new(0, 220, 0, 56)
-										Frame3.Size = UDim2.new(1, 0, 0, 56)
-									end
-								end)
-							end
-							--
+						CreateDropdown = function(Properties)
 							local Frame4 = CreateInstance('Frame', {
 								BackgroundTransparency = 1,
 								BorderSizePixel = 0,
-								Parent = Properties.Position == 'Left' and MiniLeft or Properties.Position == 'Right' and MiniRight,
+								Parent = Properties.Left and MiniLeft or Properties.Right and MiniRight,
 								Size = UDim2.new(1, 0, 0, 28),
 							})
 							--
@@ -1347,86 +1342,10 @@ function Library:CreateWindow(Properties)
 						end,
 						--
 						CreateKeybind = function(self, Properties)
-							if Properties.Position == 'Right' then
-								MiniRight = MiniRight or CreateInstance('Frame', {
-									BackgroundColor3 = Color3.fromRGB(59, 59, 59),
-									BorderSizePixel = 0,
-									Position = UDim2.new(0, 232, 0, 0),
-									Parent = Frame3,
-									Size = UDim2.new(0, 220, 0, 0),
-									Name = 'Mini_right',
-								})
-								--
-								CreateInstance('UICorner', {
-									CornerRadius = UDim.new(0, 6),
-									Parent = MiniRight,
-								})
-								--
-								CreateInstance('UIStroke', {
-									Transparency = 0.9,
-									Parent = MiniRight,
-									Color = Color3.fromRGB(133, 133, 133),
-								})
-								--
-								CreateInstance('UIListLayout', {
-									SortOrder = Enum.SortOrder.LayoutOrder,
-									Parent = MiniRight,
-								})
-								--
-								MiniRight.ChildAdded:Connect(function(Child)
-									if not Child:IsA('Frame') then return end
-									--
-									if #MiniRight:GetChildren() == 4 then
-										MiniRight.Size = UDim2.new(0, 220, 0, 28)
-										Frame3.Size = UDim2.new(1, 0, 0, 28)
-									elseif #MiniRight:GetChildren() == 5 then
-										MiniRight.Size = UDim2.new(0, 220, 0, 56)
-										Frame3.Size = UDim2.new(1, 0, 0, 56)
-									end
-								end)
-							elseif Properties.Position == 'Left' then
-								MiniLeft = MiniLeft or CreateInstance('Frame', {
-									BackgroundColor3 = Color3.fromRGB(59, 59, 59),
-									BorderSizePixel = 0,
-									Position = UDim2.new(0, 6, 0, 0),
-									Parent = Frame3,
-									Size = UDim2.new(0, 220, 0, 0),
-									Name = 'Mini_left',
-								})
-								--
-								CreateInstance('UICorner', {
-									CornerRadius = UDim.new(0, 6),
-									Parent = MiniLeft,
-								})
-								--
-								CreateInstance('UIStroke', {
-									Transparency = 0.9,
-									Parent = MiniLeft,
-									Color = Color3.fromRGB(133, 133, 133),
-								})
-								--
-								CreateInstance('UIListLayout', {
-									SortOrder = Enum.SortOrder.LayoutOrder,
-									Parent = MiniLeft,
-								})
-								--
-								MiniLeft.ChildAdded:Connect(function(Child)
-									if not Child:IsA('Frame') then return end
-									--
-									if #MiniLeft:GetChildren() == 4 then
-										MiniLeft.Size = UDim2.new(0, 220, 0, 28)
-										Frame3.Size = UDim2.new(1, 0, 0, 28)
-									elseif #MiniLeft:GetChildren() == 5 then
-										MiniLeft.Size = UDim2.new(0, 220, 0, 56)
-										Frame3.Size = UDim2.new(1, 0, 0, 56)
-									end
-								end)
-							end
-							--
 							local Frame4 = CreateInstance('Frame', {
 								BackgroundTransparency = 1,
 								BorderSizePixel = 0,
-								Parent = Properties.Position == 'Left' and MiniLeft or Properties.Position == 'Right' and MiniRight,
+								Parent = Properties.Left and MiniLeft or Properties.Right and MiniRight,
 								Size = UDim2.new(1, 0, 0, 28),
 							})
 							--
@@ -1470,87 +1389,11 @@ function Library:CreateWindow(Properties)
 							Library.ElementZone.Keybinds.Minis[Frame2.Name][Properties.Name] = Properties.Default
 						end,
 						--
-						CreateButton = function(self, Properties)
-							if Properties.Position == 'Right' then
-								MiniRight = MiniRight or CreateInstance('Frame', {
-									BackgroundColor3 = Color3.fromRGB(59, 59, 59),
-									BorderSizePixel = 0,
-									Position = UDim2.new(0, 232, 0, 0),
-									Parent = Frame3,
-									Size = UDim2.new(0, 220, 0, 0),
-									Name = 'Mini_right',
-								})
-								--
-								CreateInstance('UICorner', {
-									CornerRadius = UDim.new(0, 6),
-									Parent = MiniRight,
-								})
-								--
-								CreateInstance('UIStroke', {
-									Transparency = 0.9,
-									Parent = MiniRight,
-									Color = Color3.fromRGB(133, 133, 133),
-								})
-								--
-								CreateInstance('UIListLayout', {
-									SortOrder = Enum.SortOrder.LayoutOrder,
-									Parent = MiniRight,
-								})
-								--
-								MiniRight.ChildAdded:Connect(function(Child)
-									if not Child:IsA('Frame') then return end
-									--
-									if #MiniRight:GetChildren() == 4 then
-										MiniRight.Size = UDim2.new(0, 220, 0, 28)
-										Frame3.Size = UDim2.new(1, 0, 0, 28)
-									elseif #MiniRight:GetChildren() == 5 then
-										MiniRight.Size = UDim2.new(0, 220, 0, 56)
-										Frame3.Size = UDim2.new(1, 0, 0, 56)
-									end
-								end)
-							elseif Properties.Position == 'Left' then
-								MiniLeft = MiniLeft or CreateInstance('Frame', {
-									BackgroundColor3 = Color3.fromRGB(59, 59, 59),
-									BorderSizePixel = 0,
-									Position = UDim2.new(0, 6, 0, 0),
-									Parent = Frame3,
-									Size = UDim2.new(0, 220, 0, 0),
-									Name = 'Mini_left',
-								})
-								--
-								CreateInstance('UICorner', {
-									CornerRadius = UDim.new(0, 6),
-									Parent = MiniLeft,
-								})
-								--
-								CreateInstance('UIStroke', {
-									Transparency = 0.9,
-									Parent = MiniLeft,
-									Color = Color3.fromRGB(133, 133, 133),
-								})
-								--
-								CreateInstance('UIListLayout', {
-									SortOrder = Enum.SortOrder.LayoutOrder,
-									Parent = MiniLeft,
-								})
-								--
-								MiniLeft.ChildAdded:Connect(function(Child)
-									if not Child:IsA('Frame') then return end
-									--
-									if #MiniLeft:GetChildren() == 4 then
-										MiniLeft.Size = UDim2.new(0, 220, 0, 28)
-										Frame3.Size = UDim2.new(1, 0, 0, 28)
-									elseif #MiniLeft:GetChildren() == 5 then
-										MiniLeft.Size = UDim2.new(0, 220, 0, 56)
-										Frame3.Size = UDim2.new(1, 0, 0, 56)
-									end
-								end)
-							end
-							--
+						CreateButton = function(Properties)
 							local Frame4 = CreateInstance('Frame', {
 								BackgroundTransparency = 1,
 								BorderSizePixel = 0,
-								Parent = Properties.Position == 'Left' and MiniLeft or Properties.Position == 'Right' and MiniRight,
+								Parent = Properties.Left and MiniLeft or Properties.Right and MiniRight,
 								Size = UDim2.new(1, 0, 0, 28),
 							})
 							--
@@ -1591,87 +1434,11 @@ function Library:CreateWindow(Properties)
 							end)
 						end,
 						--
-						CreateToggle = function(self, Properties)
-							if Properties.Position == 'Right' then
-								MiniRight = MiniRight or CreateInstance('Frame', {
-									BackgroundColor3 = Color3.fromRGB(59, 59, 59),
-									BorderSizePixel = 0,
-									Position = UDim2.new(0, 232, 0, 0),
-									Parent = Frame3,
-									Size = UDim2.new(0, 220, 0, 0),
-									Name = 'Mini_right',
-								})
-								--
-								CreateInstance('UICorner', {
-									CornerRadius = UDim.new(0, 6),
-									Parent = MiniRight,
-								})
-								--
-								CreateInstance('UIStroke', {
-									Transparency = 0.9,
-									Parent = MiniRight,
-									Color = Color3.fromRGB(133, 133, 133),
-								})
-								--
-								CreateInstance('UIListLayout', {
-									SortOrder = Enum.SortOrder.LayoutOrder,
-									Parent = MiniRight,
-								})
-								--
-								MiniRight.ChildAdded:Connect(function(Child)
-									if not Child:IsA('Frame') then return end
-									--
-									if #MiniRight:GetChildren() == 4 then
-										MiniRight.Size = UDim2.new(0, 220, 0, 28)
-										Frame3.Size = UDim2.new(1, 0, 0, 28)
-									elseif #MiniRight:GetChildren() == 5 then
-										MiniRight.Size = UDim2.new(0, 220, 0, 56)
-										Frame3.Size = UDim2.new(1, 0, 0, 56)
-									end
-								end)
-							elseif Properties.Position == 'Left' then
-								MiniLeft = MiniLeft or CreateInstance('Frame', {
-									BackgroundColor3 = Color3.fromRGB(59, 59, 59),
-									BorderSizePixel = 0,
-									Position = UDim2.new(0, 6, 0, 0),
-									Parent = Frame3,
-									Size = UDim2.new(0, 220, 0, 0),
-									Name = 'Mini_left',
-								})
-								--
-								CreateInstance('UICorner', {
-									CornerRadius = UDim.new(0, 6),
-									Parent = MiniLeft,
-								})
-								--
-								CreateInstance('UIStroke', {
-									Transparency = 0.9,
-									Parent = MiniLeft,
-									Color = Color3.fromRGB(133, 133, 133),
-								})
-								--
-								CreateInstance('UIListLayout', {
-									SortOrder = Enum.SortOrder.LayoutOrder,
-									Parent = MiniLeft,
-								})
-								--
-								MiniLeft.ChildAdded:Connect(function(Child)
-									if not Child:IsA('Frame') then return end
-									--
-									if #MiniLeft:GetChildren() == 4 then
-										MiniLeft.Size = UDim2.new(0, 220, 0, 28)
-										Frame3.Size = UDim2.new(1, 0, 0, 28)
-									elseif #MiniLeft:GetChildren() == 5 then
-										MiniLeft.Size = UDim2.new(0, 220, 0, 56)
-										Frame3.Size = UDim2.new(1, 0, 0, 56)
-									end
-								end)
-							end
-							--
+						CreateToggle = function(Properties)
 							local Frame4 = CreateInstance('Frame', {
 								BackgroundTransparency = 1,
 								BorderSizePixel = 0,
-								Parent = Properties.Position == 'Left' and MiniLeft or Properties.Position == 'Right' and MiniRight,
+								Parent = Properties.Left and MiniLeft or Properties.Right and MiniRight,
 								Size = UDim2.new(1, 0, 0, 28),
 							})
 							--
@@ -1758,87 +1525,11 @@ function Library:CreateWindow(Properties)
 							Library.ElementZone.Toggles.Minis[Frame2.Name][Properties.Name] = Properties.Default
 						end,
 						--
-						CreateSlider = function(self, Properties)
-							if Properties.Position == 'Right' then
-								MiniRight = MiniRight or CreateInstance('Frame', {
-									BackgroundColor3 = Color3.fromRGB(59, 59, 59),
-									BorderSizePixel = 0,
-									Position = UDim2.new(0, 232, 0, 0),
-									Parent = Frame3,
-									Size = UDim2.new(0, 220, 0, 0),
-									Name = 'Mini_right',
-								})
-								--
-								CreateInstance('UICorner', {
-									CornerRadius = UDim.new(0, 6),
-									Parent = MiniRight,
-								})
-								--
-								CreateInstance('UIStroke', {
-									Transparency = 0.9,
-									Parent = MiniRight,
-									Color = Color3.fromRGB(133, 133, 133),
-								})
-								--
-								CreateInstance('UIListLayout', {
-									SortOrder = Enum.SortOrder.LayoutOrder,
-									Parent = MiniRight,
-								})
-								--
-								MiniRight.ChildAdded:Connect(function(Child)
-									if not Child:IsA('Frame') then return end
-									--
-									if #MiniRight:GetChildren() == 4 then
-										MiniRight.Size = UDim2.new(0, 220, 0, 28)
-										Frame3.Size = UDim2.new(1, 0, 0, 28)
-									elseif #MiniRight:GetChildren() == 5 then
-										MiniRight.Size = UDim2.new(0, 220, 0, 56)
-										Frame3.Size = UDim2.new(1, 0, 0, 56)
-									end
-								end)
-							elseif Properties.Position == 'Left' then
-								MiniLeft = MiniLeft or CreateInstance('Frame', {
-									BackgroundColor3 = Color3.fromRGB(59, 59, 59),
-									BorderSizePixel = 0,
-									Position = UDim2.new(0, 6, 0, 0),
-									Parent = Frame3,
-									Size = UDim2.new(0, 220, 0, 0),
-									Name = 'Mini_left',
-								})
-								--
-								CreateInstance('UICorner', {
-									CornerRadius = UDim.new(0, 6),
-									Parent = MiniLeft,
-								})
-								--
-								CreateInstance('UIStroke', {
-									Transparency = 0.9,
-									Parent = MiniLeft,
-									Color = Color3.fromRGB(133, 133, 133),
-								})
-								--
-								CreateInstance('UIListLayout', {
-									SortOrder = Enum.SortOrder.LayoutOrder,
-									Parent = MiniLeft,
-								})
-								--
-								MiniLeft.ChildAdded:Connect(function(Child)
-									if not Child:IsA('Frame') then return end
-									--
-									if #MiniLeft:GetChildren() == 4 then
-										MiniLeft.Size = UDim2.new(0, 220, 0, 28)
-										Frame3.Size = UDim2.new(1, 0, 0, 28)
-									elseif #MiniLeft:GetChildren() == 5 then
-										MiniLeft.Size = UDim2.new(0, 220, 0, 56)
-										Frame3.Size = UDim2.new(1, 0, 0, 56)
-									end
-								end)
-							end
-							--
+						CreateSlider = function(Properties)
 							local Frame4 = CreateInstance('Frame', {
 								BackgroundTransparency = 1,
 								BorderSizePixel = 0,
-								Parent = Properties.Position == 'Left' and MiniLeft or Properties.Position == 'Right' and MiniRight,
+								Parent = Properties.Left and MiniLeft or Properties.Right and MiniRight,
 								Size = UDim2.new(1, 0, 0, 28),
 							})
 							--
@@ -1988,7 +1679,25 @@ function Library:CreateWindow(Properties)
 						end,
 					}
 					--
-					return Functions
+					for Index, Value in Properties.Elements.Right do
+						if not Functions[Index] then continue end
+						--
+						Value.Right = true
+						Functions[Index](Value)
+					end
+					--
+					for Index, Value in Properties.Elements.Left do
+						if not Functions[Index] then continue end
+						--
+						Value.Left = true
+						Functions[Index](Value)
+					end
+					--
+					if #Properties.Elements.Right == 0 then
+						MiniRight:Destroy()
+					elseif #Properties.Elements.Left == 0 then
+						MiniLeft:Destroy()
+					end
 				end,
 			}
 			--
