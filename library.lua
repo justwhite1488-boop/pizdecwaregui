@@ -305,8 +305,6 @@ function Library:CreateWindow(Properties)
 				Text = Properties,
 			})
 			--
-			Tabs.CurrentY = Tabs.CurrentY + 37
-			--
 			return Properties
 		end,
 
@@ -316,7 +314,7 @@ function Library:CreateWindow(Properties)
 			--
 			local Position = nil
 			if #Tabs.Sections[Properties.Section].Buttons == 0 then
-				Position = Tabs.Sections[Properties.Section].Position + 20
+				Position = Tabs.CurrentY + 20
 			else
 				local LastButton = Tabs.Sections[Properties.Section].Buttons[#Tabs.Sections[Properties.Section].Buttons]
 				Position = LastButton.Position + 29
