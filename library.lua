@@ -46,7 +46,7 @@ end
 function Library:CreateWindow(Properties)
 	Library.Window = CreateInstance('ScreenGui', {
 		ResetOnSpawn = false,
-		Parent = game.Players.LocalPlayer.PlayerGui,
+		Parent = CoreGui,
 		Name = 'UIv2',
 	})
 	--
