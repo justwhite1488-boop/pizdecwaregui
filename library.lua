@@ -1680,14 +1680,14 @@ function Library:CreateWindow(Properties)
 						if not Functions[Value.Function] then continue end
 						--
 						Value.Right = true
-						Functions[Index](Value)
+						Functions[Value.Function](Value)
 					end
 					--
 					for Index, Value in Properties.Elements.Left do
 						if not Functions[Value.Function] then continue end
 						--
 						Value.Left = true
-						Functions[Index](Value)
+						Functions[Value.Function](Value)
 					end
 				end,
 			}
