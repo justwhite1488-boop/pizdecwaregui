@@ -46,7 +46,7 @@ end
 function Library:CreateWindow(Properties)
 	Library.Window = CreateInstance('ScreenGui', {
 		ResetOnSpawn = false,
-		Parent = CoreGui,
+		Parent = game.Players.LocalPlayer.PlayerGui,
 		Name = 'UIv2',
 	})
 	--
@@ -313,12 +313,12 @@ function Library:CreateWindow(Properties)
 			--
 			local Position = nil
 			if #Tabs.Sections[Properties.Section].Buttons == 0 then
-				Position = Tabs.Sections[Properties.Section].Position + 20
+				Position = Tabs.CurrentY + 20
 			else
 				Position = Tabs.Sections[Properties.Section].Buttons[#Tabs.Sections[Properties.Section].Buttons].Position + 29
 			end
 			--
-			Tabs.CurrentY += 37
+			Tabs.CurrentY = Position + 37
 			Tabs.Sections[Properties.Section].Buttons[Properties.Name] = {
 				Position = Position,
 			}
@@ -1692,9 +1692,7 @@ function Library:CreateWindow(Properties)
 					--
 					if #Properties.Elements.Right == 0 then
 						MiniRight:Destroy()
-					end
-					--
-					if #Properties.Elements.Left == 0 then
+					elseif #Properties.Elements.Left == 0 then
 						MiniLeft:Destroy()
 					end
 				end,
